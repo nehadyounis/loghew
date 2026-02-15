@@ -1,0 +1,1070 @@
+2026-02-15 20:04:12.359 [INFO ] [api-gateway] Application starting: loghew-demo v2.4.1
+2026-02-15 20:04:12.359 [INFO ] [api-gateway] Loading configuration from /etc/app/config.yaml
+2026-02-15 20:04:12.414 [INFO ] [db-pool] Initializing connection pool: postgresql://db:5432/app (max=20)
+2026-02-15 20:04:12.569 [INFO ] [db-pool] Connection pool ready: 20 connections established
+2026-02-15 20:04:12.570 [INFO ] [cache-manager] Redis connection established, cluster mode enabled
+2026-02-15 20:04:12.673 [INFO ] [message-queue] Queue bindings established: 6 queues, 12 consumers
+2026-02-15 20:04:12.673 [INFO ] [api-gateway] Server listening on 0.0.0.0:8080
+2026-02-15 20:04:12.673 [INFO ] [api-gateway] Application ready — startup completed in 0.3s
+2026-02-15 20:04:12.879 [INFO ] [load-balancer] Email notification sent to user 28216: welcome_email
+2026-02-15 20:04:12.934 [INFO ] [cache-manager] Scheduled job 'cleanup-expired-sessions' completed in 8ms
+2026-02-15 20:04:12.959 [TRACE] [notification-service] Entering method processRequest
+2026-02-15 20:04:12.959 [DEBUG] [message-queue] Connection acquired from pool (active: 17/20)
+2026-02-15 20:04:12.959 [INFO ] [payment-service] Payment processed: order #19790 amount=$796.42 via stripe
+2026-02-15 20:04:12.980 [DEBUG] [scheduler] Cache miss for key session:91691
+2026-02-15 20:04:12.980 [INFO ] [user-service] Email notification sent to user 57427: payment_receipt
+2026-02-15 20:04:13.035 [WARN ] [message-queue] Memory usage above threshold: 80% of 512MB heap
+2026-02-15 20:04:13.036 [TRACE] [cache-manager] Serializing response payload
+2026-02-15 20:04:13.140 [INFO ] [db-pool] File uploaded: avatar.png (4010KB) by user 20690
+2026-02-15 20:04:13.140 [INFO ] [db-pool] Order #74146 created: total=$728.85 items=9
+2026-02-15 20:04:13.140 [INFO ] [notification-service] Scheduled job 'sync-inventory' completed in 1ms
+2026-02-15 20:04:13.245 [DEBUG] [auth-service] Connection acquired from pool (active: 17/20)
+2026-02-15 20:04:13.245 [INFO ] [notification-service] Batch job processed 454 records in 5678ms
+2026-02-15 20:04:13.350 [ERROR] [auth-service] Payment processing failed: Stripe API returned 402 (insufficient_funds)
+2026-02-15 20:04:13.350 [WARN ] [load-balancer] Retry #859 for downstream call to payment-service (120ms timeout)
+2026-02-15 20:04:13.350 [DEBUG] [db-pool] JWT token validated for user 77634
+2026-02-15 20:04:13.451 [DEBUG] [api-gateway] Connection acquired from pool (active: 15/20)
+2026-02-15 20:04:13.451 [INFO ] [message-queue] Email notification sent to user 83247: payment_receipt
+2026-02-15 20:04:13.656 [WARN ] [db-pool] Rate limit approaching for IP 192.168.135.122: 145/100 requests
+2026-02-15 20:04:14.161 [DEBUG] [api-gateway] Rate limiter: 446/100 requests in current window
+2026-02-15 20:04:14.216 [INFO ] [auth-service] Scheduled job 'aggregate-metrics' completed in 8ms
+2026-02-15 20:04:14.216 [WARN ] [scheduler] Queue depth increasing: 1230 messages pending (auth-service)
+2026-02-15 20:04:14.216 [INFO ] [db-pool] Request completed: POST /api/v1/orders → 201 Created (3ms)
+2026-02-15 20:04:14.241 [INFO ] [message-queue] File uploaded: invoice_1234.pdf (3053KB) by user 71349
+2026-02-15 20:04:14.241 [INFO ] [db-pool] File uploaded: invoice_1234.pdf (2893KB) by user 48765
+2026-02-15 20:04:14.346 [INFO ] [scheduler] Order #70940 created: total=$470.67 items=12
+2026-02-15 20:04:14.346 [INFO ] [payment-service] File uploaded: export.csv (4580KB) by user 32225
+2026-02-15 20:04:14.346 [INFO ] [notification-service] Email notification sent to user 4873: payment_receipt
+2026-02-15 20:04:14.401 [ERROR] [auth-service] Authentication failed for user 8949: invalid credentials (attempt 952/5)
+2026-02-15 20:04:14.427 [INFO ] [notification-service] Order #76205 created: total=$348.58 items=1
+2026-02-15 20:04:14.481 [INFO ] [scheduler] Scheduled job 'send-digest-emails' completed in 1ms
+2026-02-15 20:04:14.481 [INFO ] [api-gateway] File uploaded: avatar.png (3583KB) by user 95613
+2026-02-15 20:04:14.536 [DEBUG] [auth-service] Message published to queue 'email-notifications' (size: 4942 bytes)
+2026-02-15 20:04:14.536 [DEBUG] [message-queue] Cache hit for key user:8037 (ttl: 269s remaining)
+2026-02-15 20:04:14.536 [WARN ] [cache-manager] Slow query detected (1200ms): SELECT * FROM orders WHERE created_at > ?
+2026-02-15 20:04:14.561 [INFO ] [api-gateway] User 72730 authenticated successfully from 192.168.220.247
+2026-02-15 20:04:14.561 [TRACE] [cache-manager] Entering method processRequest
+2026-02-15 20:04:14.561 [INFO ] [payment-service] Health check passed: all 17 dependencies healthy
+2026-02-15 20:04:14.767 [INFO ] [scheduler] Scheduled job 'cleanup-expired-sessions' completed in 5678ms
+2026-02-15 20:04:14.872 [INFO ] [scheduler] Order #70787 created: total=$1809.18 items=1
+2026-02-15 20:04:14.927 [WARN ] [cache-manager] Queue depth increasing: 4590 messages pending (cache-manager)
+2026-02-15 20:04:15.031 [INFO ] [notification-service] User 55256 authenticated successfully from 192.168.161.27
+2026-02-15 20:04:15.031 [INFO ] [load-balancer] Payment processed: order #67686 amount=$1144.26 via stripe
+2026-02-15 20:04:15.031 [WARN ] [load-balancer] Response time SLA breach: GET /api/v1/products/{id} took 3ms (target: 500ms)
+2026-02-15 20:04:15.086 [INFO ] [notification-service] Request completed: GET /api/v1/users/{id} → 200 OK (5678ms)
+2026-02-15 20:04:15.591 [INFO ] [db-pool] User 57665 authenticated successfully from 192.168.113.11
+2026-02-15 20:04:15.591 [INFO ] [auth-service] Scheduled job 'send-digest-emails' completed in 120ms
+2026-02-15 20:04:16.096 [INFO ] [auth-service] Request completed: GET /api/v1/orders/{id} → 200 OK (23ms)
+2026-02-15 20:04:16.151 [INFO ] [auth-service] Request completed: GET /api/v1/orders → 200 OK (120ms)
+2026-02-15 20:04:16.256 [DEBUG] [cache-manager] Database query executed in 23ms: SELECT * FROM users WHERE id = ?
+2026-02-15 20:04:16.281 [WARN ] [user-service] Memory usage above threshold: 76% of 4096MB heap
+2026-02-15 20:04:16.305 [ERROR] [load-balancer] Authentication failed for user 83648: invalid credentials (attempt 214/5)
+2026-02-15 20:04:16.305 [INFO ] [api-gateway] Health check passed: all 28 dependencies healthy
+2026-02-15 20:04:16.305 [INFO ] [api-gateway] Scheduled job 'aggregate-metrics' completed in 1200ms
+2026-02-15 20:04:16.360 [TRACE] [notification-service] Connection pool stats: active=12 idle=8 total=20
+2026-02-15 20:04:16.360 [WARN ] [user-service] Slow query detected (8ms): SELECT * FROM orders WHERE created_at > ?
+2026-02-15 20:04:16.360 [INFO ] [api-gateway] Health check passed: all 246 dependencies healthy
+2026-02-15 20:04:16.466 [WARN ] [message-queue] Queue depth increasing: 441 messages pending (payment-service)
+2026-02-15 20:04:16.570 [INFO ] [load-balancer] Request completed: GET /api/v1/products/{id} → 200 OK (1ms)
+2026-02-15 20:04:16.570 [INFO ] [auth-service] Request completed: GET /api/v1/users/{id} → 200 OK (8ms)
+2026-02-15 20:04:16.625 [INFO ] [db-pool] Email notification sent to user 16744: password_reset
+2026-02-15 20:04:16.625 [INFO ] [cache-manager] Email notification sent to user 68628: password_reset
+2026-02-15 20:04:16.680 [INFO ] [message-queue] Health check passed: all 109 dependencies healthy
+2026-02-15 20:04:16.785 [INFO ] [user-service] Health check passed: all 19 dependencies healthy
+2026-02-15 20:04:16.785 [ERROR] [auth-service] Database connection failed: connection refused (postgresql://db:5432/app)
+2026-02-15 20:04:16.785 [INFO ] [scheduler] Email notification sent to user 73461: order_confirmation
+2026-02-15 20:04:16.990 [TRACE] [message-queue] Cache key lookup: user:7113
+2026-02-15 20:04:17.045 [INFO ] [auth-service] File uploaded: avatar.png (3594KB) by user 89917
+2026-02-15 20:04:17.045 [DEBUG] [notification-service] Processing request 01a4012 for DELETE /api/v1/users/{id}
+2026-02-15 20:04:17.100 [INFO ] [message-queue] Payment processed: order #52883 amount=$1107.57 via stripe
+2026-02-15 20:04:17.206 [WARN ] [auth-service] Queue depth increasing: 3621 messages pending (scheduler)
+2026-02-15 20:04:17.206 [DEBUG] [notification-service] JWT token validated for user 69144
+2026-02-15 20:04:17.206 [INFO ] [load-balancer] Health check passed: all 313 dependencies healthy
+2026-02-15 20:04:17.311 [WARN ] [api-gateway] Slow query detected (23ms): SELECT * FROM orders WHERE created_at > ?
+2026-02-15 20:04:17.311 [INFO ] [notification-service] Health check passed: all 53 dependencies healthy
+2026-02-15 20:04:17.414 [DEBUG] [payment-service] JWT token validated for user 45140
+2026-02-15 20:04:17.414 [INFO ] [cache-manager] Scheduled job 'aggregate-metrics' completed in 1ms
+2026-02-15 20:04:17.414 [ERROR] [message-queue] Deadlock detected in database connection pool
+java.lang.NullPointerException: Cannot invoke method on null reference
+	at com.app.service.UserService.getProfile(UserService.java:142)
+	at com.app.controller.UserController.handleGetUser(UserController.java:87)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:897)
+2026-02-15 20:04:17.439 [INFO ] [load-balancer] Batch job processed 73 records in 8ms
+2026-02-15 20:04:17.494 [INFO ] [cache-manager] Health check passed: all 462 dependencies healthy
+2026-02-15 20:04:17.494 [INFO ] [load-balancer] Health check passed: all 82 dependencies healthy
+2026-02-15 20:04:17.549 [INFO ] [auth-service] Payment processed: order #49741 amount=$99.42 via stripe
+2026-02-15 20:04:17.753 [INFO ] [payment-service] Order #67419 created: total=$280.24 items=8
+2026-02-15 20:04:17.753 [INFO ] [auth-service] Request completed: GET /api/v1/orders → 200 OK (120ms)
+2026-02-15 20:04:17.807 [INFO ] [message-queue] Health check passed: all 312 dependencies healthy
+2026-02-15 20:04:17.807 [WARN ] [user-service] Slow query detected (120ms): SELECT * FROM orders WHERE created_at > ?
+2026-02-15 20:04:17.912 [INFO ] [payment-service] Request completed: POST /api/v1/auth/login → 200 OK (8ms)
+2026-02-15 20:04:17.912 [DEBUG] [notification-service] Cache miss for key session:13421
+2026-02-15 20:04:17.912 [WARN ] [cache-manager] Slow query detected (120ms): SELECT * FROM orders WHERE created_at > ?
+2026-02-15 20:04:17.962 [TRACE] [scheduler] Exiting method processRequest
+2026-02-15 20:04:18.067 [INFO ] [scheduler] Payment processed: order #67839 amount=$1162.80 via stripe
+2026-02-15 20:04:18.067 [DEBUG] [load-balancer] Cache hit for key user:97770 (ttl: 854s remaining)
+2026-02-15 20:04:18.272 [INFO ] [user-service] Health check passed: all 497 dependencies healthy
+2026-02-15 20:04:18.273 [DEBUG] [message-queue] Processing request 024dd65 for POST /api/v1/auth/logout
+2026-02-15 20:04:18.297 [TRACE] [cache-manager] Request body size: 2574 bytes
+2026-02-15 20:04:18.502 [DEBUG] [auth-service] Cache hit for key user:8670 (ttl: 3499s remaining)
+2026-02-15 20:04:18.555 [ERROR] [auth-service] Payment processing failed: Stripe API returned 402 (insufficient_funds)
+2026-02-15 20:04:18.555 [INFO ] [notification-service] Payment processed: order #12085 amount=$225.35 via stripe
+2026-02-15 20:04:19.060 [INFO ] [cache-manager] Request completed: GET /api/v1/products/{id} → 201 Created (5678ms)
+2026-02-15 20:04:19.060 [INFO ] [cache-manager] Request completed: GET /api/v1/orders/{id} → 201 Created (23ms)
+2026-02-15 20:04:19.060 [WARN ] [cache-manager] Retry #398 for downstream call to payment-service (67ms timeout)
+2026-02-15 20:04:19.265 [INFO ] [cache-manager] Order #69915 created: total=$309.16 items=12
+2026-02-15 20:04:19.290 [INFO ] [db-pool] User 57428 authenticated successfully from 192.168.136.114
+2026-02-15 20:04:19.290 [INFO ] [auth-service] Batch job processed 134 records in 67ms
+2026-02-15 20:04:19.290 [DEBUG] [db-pool] Connection acquired from pool (active: 16/20)
+2026-02-15 20:04:19.315 [DEBUG] [cache-manager] Cache hit for key user:23836 (ttl: 1424s remaining)
+2026-02-15 20:04:19.420 [INFO ] [message-queue] Batch job processed 420 records in 1ms
+2026-02-15 20:04:19.420 [WARN ] [auth-service] Slow query detected (3ms): SELECT * FROM orders WHERE created_at > ?
+2026-02-15 20:04:19.420 [INFO ] [notification-service] Order #15830 created: total=$1374.62 items=11
+2026-02-15 20:04:19.475 [INFO ] [scheduler] Order #97503 created: total=$2499.03 items=8
+2026-02-15 20:04:19.500 [DEBUG] [load-balancer] Rate limiter: 323/100 requests in current window
+2026-02-15 20:04:19.500 [ERROR] [db-pool] Request failed: GET /api/v1/health → 500 Internal Server Error
+2026-02-15 20:04:19.605 [INFO ] [auth-service] Batch job processed 170 records in 5678ms
+2026-02-15 20:04:19.605 [WARN ] [api-gateway] Memory usage above threshold: 88% of 2048MB heap
+2026-02-15 20:04:19.605 [ERROR] [notification-service] Deadlock detected in database connection pool
+2026-02-15 20:04:20.105 [INFO ] [db-pool] Payment processed: order #61872 amount=$1200.23 via stripe
+2026-02-15 20:04:20.105 [DEBUG] [scheduler] Database query executed in 120ms: SELECT * FROM users WHERE id = ?
+2026-02-15 20:04:20.105 [INFO ] [db-pool] User 81761 authenticated successfully from 192.168.57.168
+2026-02-15 20:04:20.210 [WARN ] [load-balancer] Slow query detected (3ms): SELECT * FROM orders WHERE created_at > ?
+2026-02-15 20:04:20.211 [INFO ] [message-queue] Order #30989 created: total=$1985.44 items=7
+2026-02-15 20:04:20.314 [WARN ] [payment-service] Response time SLA breach: PUT /api/v1/users/{id} took 3ms (target: 500ms)
+2026-02-15 20:04:20.314 [INFO ] [api-gateway] User 42860 authenticated successfully from 192.168.146.237
+2026-02-15 20:04:20.419 [INFO ] [api-gateway] Request completed: POST /api/v1/users → 200 OK (120ms)
+2026-02-15 20:04:20.419 [INFO ] [user-service] Email notification sent to user 67188: payment_receipt
+2026-02-15 20:04:21.424 [DEBUG] [api-gateway] Database query executed in 23ms: SELECT * FROM users WHERE id = ?
+2026-02-15 20:04:21.449 [INFO ] [db-pool] File uploaded: avatar.png (1085KB) by user 16173
+2026-02-15 20:04:21.474 [WARN ] [user-service] Slow query detected (5678ms): SELECT * FROM orders WHERE created_at > ?
+2026-02-15 20:04:21.580 [INFO ] [payment-service] Email notification sent to user 99141: order_confirmation
+2026-02-15 20:04:21.684 [INFO ] [db-pool] Email notification sent to user 81326: password_reset
+2026-02-15 20:04:21.684 [INFO ] [db-pool] Health check passed: all 124 dependencies healthy
+2026-02-15 20:04:21.684 [INFO ] [auth-service] Batch job processed 223 records in 5678ms
+2026-02-15 20:04:21.787 [TRACE] [payment-service] Entering method processRequest
+2026-02-15 20:04:21.787 [DEBUG] [api-gateway] Processing request 0807fcd for POST /api/v1/orders
+2026-02-15 20:04:21.841 [ERROR] [load-balancer] Database connection failed: connection refused (postgresql://db:5432/app)
+2026-02-15 20:04:21.841 [ERROR] [message-queue] Payment processing failed: Stripe API returned 402 (insufficient_funds)
+2026-02-15 20:04:21.841 [INFO ] [api-gateway] File uploaded: avatar.png (1947KB) by user 47023
+2026-02-15 20:04:21.896 [DEBUG] [scheduler] Cache miss for key session:54084
+2026-02-15 20:04:22.401 [INFO ] [load-balancer] Batch job processed 437 records in 120ms
+2026-02-15 20:04:22.401 [ERROR] [cache-manager] Deadlock detected in database connection pool
+thread 'tokio-runtime-worker' panicked at 'called `Option::unwrap()` on a `None` value'
+   0: std::panicking::begin_panic_handler
+   1: core::panicking::panic_fmt
+   2: app::handler::process_request at src/handler.rs:142
+2026-02-15 20:04:22.401 [INFO ] [db-pool] Scheduled job 'cleanup-expired-sessions' completed in 3ms
+2026-02-15 20:04:22.506 [DEBUG] [user-service] Rate limiter: 468/100 requests in current window
+2026-02-15 20:04:22.506 [DEBUG] [message-queue] Connection acquired from pool (active: 14/20)
+2026-02-15 20:04:22.506 [INFO ] [cache-manager] Request completed: POST /api/v1/payments → 200 OK (120ms)
+2026-02-15 20:04:23.011 [INFO ] [load-balancer] Order #57616 created: total=$775.24 items=10
+2026-02-15 20:04:23.011 [INFO ] [message-queue] Scheduled job 'sync-inventory' completed in 5678ms
+2026-02-15 20:04:23.011 [DEBUG] [scheduler] Cache miss for key session:16535
+2026-02-15 20:04:23.063 [INFO ] [user-service] User 78896 authenticated successfully from 192.168.139.212
+2026-02-15 20:04:23.568 [DEBUG] [user-service] Rate limiter: 229/100 requests in current window
+2026-02-15 20:04:23.568 [ERROR] [payment-service] Payment processing failed: Stripe API returned 402 (insufficient_funds)
+2026-02-15 20:04:23.619 [INFO ] [load-balancer] User 39055 authenticated successfully from 192.168.73.23
+2026-02-15 20:04:23.619 [ERROR] [notification-service] Authentication failed for user 47945: invalid credentials (attempt 733/5)
+2026-02-15 20:04:23.619 [ERROR] [payment-service] Timeout waiting for response from db-pool after 23ms
+2026-02-15 20:04:23.675 [INFO ] [user-service] Email notification sent to user 93258: payment_receipt
+2026-02-15 20:04:24.178 [INFO ] [cache-manager] Request completed: GET /api/v1/metrics → 201 Created (1ms)
+2026-02-15 20:04:24.178 [INFO ] [user-service] File uploaded: report_2024.pdf (4194KB) by user 46303
+2026-02-15 20:04:24.178 [TRACE] [cache-manager] Connection pool stats: active=12 idle=8 total=20
+2026-02-15 20:04:24.233 [INFO ] [user-service] Email notification sent to user 33261: password_reset
+2026-02-15 20:04:24.233 [INFO ] [cache-manager] Request completed: GET /api/v1/users/{id} → 200 OK (1200ms)
+2026-02-15 20:04:24.233 [ERROR] [user-service] Database connection failed: connection refused (postgresql://db:5432/app)
+2026-02-15 20:04:24.339 [INFO ] [api-gateway] User 26624 authenticated successfully from 192.168.118.114
+2026-02-15 20:04:24.339 [INFO ] [load-balancer] Email notification sent to user 16938: order_confirmation
+2026-02-15 20:04:24.339 [INFO ] [db-pool] User 30097 authenticated successfully from 192.168.139.212
+2026-02-15 20:04:24.364 [INFO ] [scheduler] Order #50182 created: total=$342.90 items=1
+2026-02-15 20:04:24.364 [WARN ] [load-balancer] Disk space low on /var/log: 76% used (4.3GB remaining)
+2026-02-15 20:04:24.364 [INFO ] [load-balancer] File uploaded: avatar.png (2256KB) by user 10598
+2026-02-15 20:04:24.419 [INFO ] [auth-service] Health check passed: all 121 dependencies healthy
+2026-02-15 20:04:24.419 [WARN ] [api-gateway] Disk space low on /var/log: 84% used (3.2GB remaining)
+2026-02-15 20:04:24.419 [INFO ] [load-balancer] Health check passed: all 189 dependencies healthy
+2026-02-15 20:04:24.524 [INFO ] [message-queue] Email notification sent to user 97690: payment_receipt
+2026-02-15 20:04:24.547 [WARN ] [scheduler] Memory usage above threshold: 76% of 2048MB heap
+2026-02-15 20:04:24.547 [INFO ] [api-gateway] Request completed: GET /api/v1/products/{id} → 200 OK (67ms)
+2026-02-15 20:04:24.547 [TRACE] [user-service] Exiting method processRequest
+2026-02-15 20:04:24.653 [INFO ] [scheduler] File uploaded: export.csv (4568KB) by user 32548
+2026-02-15 20:04:24.653 [INFO ] [cache-manager] Payment processed: order #35665 amount=$2461.23 via stripe
+2026-02-15 20:04:24.708 [INFO ] [load-balancer] File uploaded: report_2024.pdf (280KB) by user 95089
+2026-02-15 20:04:24.708 [INFO ] [notification-service] Scheduled job 'aggregate-metrics' completed in 23ms
+2026-02-15 20:04:24.708 [INFO ] [user-service] File uploaded: avatar.png (4694KB) by user 55127
+2026-02-15 20:04:24.733 [ERROR] [db-pool] Circuit breaker OPEN for db-pool: 351 failures in last 60s
+2026-02-15 20:04:24.788 [INFO ] [payment-service] Health check passed: all 283 dependencies healthy
+2026-02-15 20:04:24.843 [DEBUG] [user-service] Database query executed in 120ms: SELECT * FROM users WHERE id = ?
+2026-02-15 20:04:25.048 [INFO ] [cache-manager] Request completed: POST /api/v1/payments → 200 OK (1200ms)
+2026-02-15 20:04:25.048 [INFO ] [scheduler] Scheduled job 'sync-inventory' completed in 8ms
+2026-02-15 20:04:25.253 [INFO ] [scheduler] Health check passed: all 21 dependencies healthy
+2026-02-15 20:04:25.253 [INFO ] [scheduler] Request completed: GET /api/v1/payments/{id} → 201 Created (120ms)
+2026-02-15 20:04:25.308 [DEBUG] [cache-manager] Message published to queue 'payment-processing' (size: 314 bytes)
+2026-02-15 20:04:25.309 [INFO ] [api-gateway] Order #46278 created: total=$1669.41 items=6
+2026-02-15 20:04:25.309 [WARN ] [load-balancer] Response time SLA breach: DELETE /api/v1/users/{id} took 23ms (target: 500ms)
+2026-02-15 20:04:25.364 [INFO ] [notification-service] File uploaded: invoice_1234.pdf (1664KB) by user 55695
+2026-02-15 20:04:25.419 [TRACE] [user-service] Exiting method processRequest
+2026-02-15 20:04:25.419 [INFO ] [db-pool] Order #68474 created: total=$1719.25 items=12
+2026-02-15 20:04:25.419 [INFO ] [payment-service] Order #69570 created: total=$2021.14 items=9
+2026-02-15 20:04:25.524 [INFO ] [payment-service] File uploaded: export.csv (4292KB) by user 98105
+2026-02-15 20:04:25.524 [INFO ] [load-balancer] Email notification sent to user 89330: welcome_email
+2026-02-15 20:04:26.529 [INFO ] [user-service] Order #31205 created: total=$843.79 items=12
+2026-02-15 20:04:26.529 [INFO ] [scheduler] Payment processed: order #18430 amount=$690.87 via stripe
+2026-02-15 20:04:26.529 [ERROR] [scheduler] Payment processing failed: Stripe API returned 402 (insufficient_funds)
+thread 'tokio-runtime-worker' panicked at 'called `Option::unwrap()` on a `None` value'
+   0: std::panicking::begin_panic_handler
+   1: core::panicking::panic_fmt
+   2: app::handler::process_request at src/handler.rs:142
+2026-02-15 20:04:26.584 [WARN ] [scheduler] Slow query detected (8ms): SELECT * FROM orders WHERE created_at > ?
+2026-02-15 20:04:26.584 [DEBUG] [notification-service] Cache hit for key user:7013 (ttl: 785s remaining)
+2026-02-15 20:04:26.609 [INFO ] [notification-service] Order #83239 created: total=$1638.37 items=6
+2026-02-15 20:04:26.635 [WARN ] [message-queue] Connection pool near capacity: 11/20 connections in use
+2026-02-15 20:04:26.635 [INFO ] [api-gateway] Order #40789 created: total=$918.38 items=10
+2026-02-15 20:04:26.635 [INFO ] [message-queue] Request completed: GET /api/v1/orders/{id} → 201 Created (23ms)
+2026-02-15 20:04:26.740 [TRACE] [notification-service] Exiting method processRequest
+2026-02-15 20:04:26.763 [WARN ] [auth-service] Queue depth increasing: 253 messages pending (cache-manager)
+2026-02-15 20:04:26.763 [WARN ] [load-balancer] Retry #187 for downstream call to payment-service (120ms timeout)
+2026-02-15 20:04:26.868 [INFO ] [notification-service] Email notification sent to user 65454: order_confirmation
+2026-02-15 20:04:26.868 [DEBUG] [db-pool] Message published to queue 'analytics-events' (size: 1629 bytes)
+2026-02-15 20:04:26.868 [INFO ] [message-queue] File uploaded: invoice_1234.pdf (2243KB) by user 83884
+2026-02-15 20:04:26.973 [INFO ] [cache-manager] Health check passed: all 22 dependencies healthy
+2026-02-15 20:04:27.028 [DEBUG] [auth-service] Rate limiter: 377/100 requests in current window
+2026-02-15 20:04:27.028 [INFO ] [db-pool] Payment processed: order #24201 amount=$1124.14 via stripe
+2026-02-15 20:04:27.028 [INFO ] [payment-service] Payment processed: order #36446 amount=$915.11 via stripe
+2026-02-15 20:04:27.083 [ERROR] [message-queue] Deadlock detected in database connection pool
+2026-02-15 20:04:27.106 [INFO ] [notification-service] Email notification sent to user 96471: welcome_email
+2026-02-15 20:04:27.106 [INFO ] [scheduler] Request completed: POST /api/v1/auth/logout → 200 OK (23ms)
+2026-02-15 20:04:27.106 [INFO ] [message-queue] Request completed: POST /api/v1/auth/login → 201 Created (23ms)
+2026-02-15 20:04:27.308 [WARN ] [notification-service] Memory usage above threshold: 96% of 2048MB heap
+2026-02-15 20:04:27.308 [INFO ] [auth-service] Order #69278 created: total=$1886.64 items=8
+2026-02-15 20:04:27.308 [INFO ] [notification-service] Scheduled job 'sync-inventory' completed in 8ms
+2026-02-15 20:04:27.513 [TRACE] [api-gateway] Serializing response payload
+2026-02-15 20:04:27.513 [TRACE] [message-queue] Connection pool stats: active=12 idle=8 total=20
+2026-02-15 20:04:27.538 [INFO ] [auth-service] Email notification sent to user 85234: order_confirmation
+2026-02-15 20:04:27.538 [TRACE] [auth-service] Exiting method processRequest
+2026-02-15 20:04:27.538 [INFO ] [load-balancer] Payment processed: order #20561 amount=$2471.54 via stripe
+2026-02-15 20:04:27.593 [DEBUG] [scheduler] Cache hit for key user:84916 (ttl: 1212s remaining)
+2026-02-15 20:04:27.798 [INFO ] [message-queue] Batch job processed 369 records in 3ms
+2026-02-15 20:04:27.798 [INFO ] [api-gateway] File uploaded: export.csv (3503KB) by user 66121
+2026-02-15 20:04:27.798 [INFO ] [scheduler] Order #87460 created: total=$977.31 items=2
+2026-02-15 20:04:27.904 [INFO ] [db-pool] Scheduled job 'aggregate-metrics' completed in 456ms
+2026-02-15 20:04:28.909 [INFO ] [api-gateway] Batch job processed 312 records in 5678ms
+2026-02-15 20:04:28.909 [WARN ] [message-queue] Slow query detected (1200ms): SELECT * FROM orders WHERE created_at > ?
+2026-02-15 20:04:28.909 [INFO ] [load-balancer] Health check passed: all 341 dependencies healthy
+2026-02-15 20:04:28.964 [INFO ] [scheduler] Health check passed: all 320 dependencies healthy
+2026-02-15 20:04:28.964 [TRACE] [scheduler] Connection pool stats: active=12 idle=8 total=20
+2026-02-15 20:04:28.964 [INFO ] [auth-service] Request completed: POST /api/v1/notifications/send → 200 OK (23ms)
+2026-02-15 20:04:29.065 [TRACE] [api-gateway] Serializing response payload
+2026-02-15 20:04:29.065 [INFO ] [notification-service] Request completed: GET /api/v1/users → 201 Created (67ms)
+2026-02-15 20:04:29.120 [WARN ] [message-queue] Queue depth increasing: 3627 messages pending (message-queue)
+2026-02-15 20:04:29.120 [TRACE] [load-balancer] Request body size: 3055 bytes
+2026-02-15 20:04:29.120 [INFO ] [cache-manager] User 73889 authenticated successfully from 192.168.118.114
+2026-02-15 20:04:29.175 [INFO ] [payment-service] Batch job processed 370 records in 1200ms
+2026-02-15 20:04:29.175 [INFO ] [cache-manager] User 7175 authenticated successfully from 192.168.177.191
+2026-02-15 20:04:29.175 [INFO ] [message-queue] Batch job processed 321 records in 1200ms
+2026-02-15 20:04:29.200 [INFO ] [message-queue] Batch job processed 426 records in 8ms
+2026-02-15 20:04:29.200 [DEBUG] [payment-service] Database query executed in 67ms: SELECT * FROM users WHERE id = ?
+2026-02-15 20:04:29.200 [INFO ] [api-gateway] Health check passed: all 46 dependencies healthy
+2026-02-15 20:04:29.255 [INFO ] [scheduler] Payment processed: order #31163 amount=$547.12 via stripe
+2026-02-15 20:04:29.255 [TRACE] [cache-manager] Exiting method processRequest
+2026-02-15 20:04:29.255 [WARN ] [load-balancer] Connection pool near capacity: 16/20 connections in use
+2026-02-15 20:04:29.360 [INFO ] [auth-service] File uploaded: report_2024.pdf (636KB) by user 8476
+2026-02-15 20:04:29.360 [WARN ] [payment-service] Slow query detected (3ms): SELECT * FROM orders WHERE created_at > ?
+2026-02-15 20:04:29.360 [DEBUG] [api-gateway] Cache miss for key session:26835
+2026-02-15 20:04:29.416 [WARN ] [scheduler] Rate limit approaching for IP 192.168.71.199: 150/100 requests
+2026-02-15 20:04:29.416 [INFO ] [db-pool] Request completed: POST /api/v1/users → 200 OK (1200ms)
+2026-02-15 20:04:29.521 [WARN ] [api-gateway] Memory usage above threshold: 85% of 512MB heap
+2026-02-15 20:04:29.521 [INFO ] [scheduler] Order #98237 created: total=$2063.51 items=6
+2026-02-15 20:04:29.521 [DEBUG] [auth-service] Message published to queue 'order-updates' (size: 1200 bytes)
+2026-02-15 20:04:29.576 [ERROR] [db-pool] Database connection failed: connection refused (postgresql://db:5432/app)
+2026-02-15 20:04:29.576 [INFO ] [payment-service] Email notification sent to user 63568: welcome_email
+2026-02-15 20:04:29.631 [INFO ] [notification-service] User 92589 authenticated successfully from 192.168.161.27
+2026-02-15 20:04:29.736 [INFO ] [cache-manager] Request completed: POST /api/v1/auth/logout → 201 Created (456ms)
+2026-02-15 20:04:29.736 [WARN ] [scheduler] Connection pool near capacity: 18/20 connections in use
+2026-02-15 20:04:29.736 [DEBUG] [message-queue] JWT token validated for user 61335
+2026-02-15 20:04:29.836 [INFO ] [message-queue] Batch job processed 352 records in 3ms
+2026-02-15 20:04:29.941 [DEBUG] [auth-service] Rate limiter: 373/100 requests in current window
+2026-02-15 20:04:30.045 [INFO ] [message-queue] File uploaded: invoice_1234.pdf (2498KB) by user 15806
+2026-02-15 20:04:30.045 [INFO ] [db-pool] Request completed: DELETE /api/v1/users/{id} → 201 Created (23ms)
+2026-02-15 20:04:30.045 [WARN ] [db-pool] Memory usage above threshold: 86% of 4096MB heap
+2026-02-15 20:04:30.250 [DEBUG] [load-balancer] Connection acquired from pool (active: 14/20)
+2026-02-15 20:04:30.250 [INFO ] [payment-service] Payment processed: order #51171 amount=$1005.26 via stripe
+2026-02-15 20:04:30.250 [INFO ] [user-service] File uploaded: invoice_1234.pdf (595KB) by user 59107
+2026-02-15 20:04:30.275 [WARN ] [payment-service] Connection pool near capacity: 17/20 connections in use
+2026-02-15 20:04:30.297 [WARN ] [api-gateway] Queue depth increasing: 2153 messages pending (load-balancer)
+2026-02-15 20:04:30.297 [INFO ] [payment-service] User 35147 authenticated successfully from 192.168.217.42
+2026-02-15 20:04:30.402 [ERROR] [payment-service] Timeout waiting for response from cache-manager after 456ms
+2026-02-15 20:04:30.402 [INFO ] [db-pool] Batch job processed 240 records in 5678ms
+2026-02-15 20:04:30.402 [TRACE] [db-pool] Connection pool stats: active=12 idle=8 total=20
+2026-02-15 20:04:30.603 [DEBUG] [notification-service] Cache miss for key session:46388
+2026-02-15 20:04:30.624 [INFO ] [load-balancer] Request completed: GET /api/v1/products → 200 OK (23ms)
+2026-02-15 20:04:30.729 [INFO ] [api-gateway] Request completed: GET /api/v1/users/{id} → 201 Created (5678ms)
+2026-02-15 20:04:30.729 [INFO ] [user-service] Scheduled job 'cleanup-expired-sessions' completed in 5678ms
+2026-02-15 20:04:30.754 [INFO ] [load-balancer] Request completed: POST /api/v1/payments → 201 Created (5678ms)
+2026-02-15 20:04:30.754 [INFO ] [auth-service] File uploaded: invoice_1234.pdf (1123KB) by user 26725
+2026-02-15 20:04:30.754 [WARN ] [cache-manager] Rate limit approaching for IP 192.168.197.14: 486/100 requests
+2026-02-15 20:04:30.959 [INFO ] [auth-service] Request completed: PUT /api/v1/users/{id} → 201 Created (3ms)
+2026-02-15 20:04:30.959 [INFO ] [auth-service] Batch job processed 467 records in 456ms
+2026-02-15 20:04:31.164 [INFO ] [notification-service] Email notification sent to user 44294: order_confirmation
+2026-02-15 20:04:31.164 [INFO ] [scheduler] Payment processed: order #19019 amount=$1485.31 via stripe
+2026-02-15 20:04:33.169 [INFO ] [notification-service] Request completed: PUT /api/v1/users/{id} → 201 Created (120ms)
+2026-02-15 20:04:33.169 [INFO ] [message-queue] User 9471 authenticated successfully from 192.168.59.175
+2026-02-15 20:04:33.224 [INFO ] [message-queue] User 80123 authenticated successfully from 192.168.71.199
+2026-02-15 20:04:33.224 [INFO ] [user-service] Request completed: POST /api/v1/orders → 200 OK (5678ms)
+2026-02-15 20:04:33.224 [INFO ] [cache-manager] Request completed: POST /api/v1/notifications/send → 200 OK (5678ms)
+2026-02-15 20:04:33.280 [INFO ] [auth-service] Payment processed: order #19406 amount=$889.70 via stripe
+2026-02-15 20:04:33.335 [INFO ] [db-pool] Email notification sent to user 52256: password_reset
+2026-02-15 20:04:33.540 [INFO ] [db-pool] User 8759 authenticated successfully from 192.168.135.122
+2026-02-15 20:04:33.593 [INFO ] [notification-service] Health check passed: all 283 dependencies healthy
+2026-02-15 20:04:33.648 [INFO ] [load-balancer] Health check passed: all 187 dependencies healthy
+2026-02-15 20:04:33.648 [INFO ] [notification-service] Request completed: POST /api/v1/notifications/send → 200 OK (67ms)
+2026-02-15 20:04:33.753 [INFO ] [notification-service] User 5214 authenticated successfully from 192.168.205.202
+2026-02-15 20:04:33.753 [INFO ] [scheduler] Payment processed: order #87838 amount=$862.71 via stripe
+2026-02-15 20:04:33.753 [INFO ] [message-queue] User 95628 authenticated successfully from 192.168.177.191
+2026-02-15 20:04:33.808 [INFO ] [notification-service] Request completed: POST /api/v1/auth/login → 201 Created (456ms)
+2026-02-15 20:04:33.863 [INFO ] [db-pool] Payment processed: order #90971 amount=$1775.54 via stripe
+2026-02-15 20:04:33.863 [WARN ] [message-queue] Connection pool near capacity: 16/20 connections in use
+2026-02-15 20:04:33.918 [INFO ] [cache-manager] File uploaded: invoice_1234.pdf (3793KB) by user 20447
+2026-02-15 20:04:33.973 [DEBUG] [db-pool] Processing request 06fb28b for POST /api/v1/orders
+2026-02-15 20:04:33.973 [WARN ] [api-gateway] Queue depth increasing: 4881 messages pending (load-balancer)
+2026-02-15 20:04:34.024 [WARN ] [db-pool] Queue depth increasing: 4802 messages pending (scheduler)
+2026-02-15 20:04:34.024 [WARN ] [api-gateway] Response time SLA breach: GET /api/v1/users took 1ms (target: 500ms)
+2026-02-15 20:04:34.128 [INFO ] [scheduler] File uploaded: report_2024.pdf (4217KB) by user 68565
+2026-02-15 20:04:34.128 [INFO ] [scheduler] Email notification sent to user 54327: password_reset
+2026-02-15 20:04:34.128 [WARN ] [cache-manager] Queue depth increasing: 1388 messages pending (load-balancer)
+2026-02-15 20:04:34.233 [WARN ] [user-service] Queue depth increasing: 4547 messages pending (payment-service)
+2026-02-15 20:04:34.233 [INFO ] [notification-service] User 3833 authenticated successfully from 192.168.208.201
+2026-02-15 20:04:34.233 [ERROR] [notification-service] Payment processing failed: Stripe API returned 402 (insufficient_funds)
+Traceback (most recent call last):
+  File "/app/services/user_service.py", line 89, in get_user
+    user = db.query(User).filter(User.id == user_id).one()
+sqlalchemy.exc.NoResultFound: No row was found when one was required
+2026-02-15 20:04:34.339 [WARN ] [notification-service] Response time SLA breach: GET /api/v1/products took 23ms (target: 500ms)
+2026-02-15 20:04:34.339 [INFO ] [notification-service] File uploaded: avatar.png (4796KB) by user 33482
+2026-02-15 20:04:34.339 [DEBUG] [scheduler] Cache miss for key session:78058
+2026-02-15 20:04:34.394 [INFO ] [cache-manager] Order #61453 created: total=$513.31 items=6
+2026-02-15 20:04:34.394 [INFO ] [scheduler] Batch job processed 424 records in 1ms
+2026-02-15 20:04:34.394 [INFO ] [payment-service] Email notification sent to user 4904: payment_receipt
+2026-02-15 20:04:35.399 [DEBUG] [load-balancer] Cache hit for key user:29607 (ttl: 2365s remaining)
+2026-02-15 20:04:35.451 [INFO ] [db-pool] Health check passed: all 152 dependencies healthy
+2026-02-15 20:04:35.451 [INFO ] [notification-service] Request completed: GET /api/v1/users → 201 Created (456ms)
+2026-02-15 20:04:35.476 [INFO ] [load-balancer] Payment processed: order #62875 amount=$1120.35 via stripe
+2026-02-15 20:04:35.476 [INFO ] [cache-manager] Payment processed: order #77465 amount=$110.79 via stripe
+2026-02-15 20:04:35.681 [DEBUG] [payment-service] JWT token validated for user 4093
+2026-02-15 20:04:35.736 [WARN ] [user-service] Rate limit approaching for IP 192.168.235.241: 154/100 requests
+2026-02-15 20:04:35.736 [TRACE] [payment-service] Serializing response payload
+2026-02-15 20:04:35.736 [INFO ] [notification-service] Payment processed: order #91919 amount=$430.92 via stripe
+2026-02-15 20:04:35.841 [INFO ] [auth-service] Payment processed: order #53539 amount=$307.81 via stripe
+2026-02-15 20:04:35.946 [INFO ] [user-service] Request completed: GET /api/v1/products/{id} → 201 Created (8ms)
+2026-02-15 20:04:35.947 [DEBUG] [notification-service] Database query executed in 120ms: SELECT * FROM users WHERE id = ?
+2026-02-15 20:04:36.052 [DEBUG] [db-pool] Message published to queue 'order-updates' (size: 2354 bytes)
+2026-02-15 20:04:36.255 [TRACE] [message-queue] Connection pool stats: active=12 idle=8 total=20
+2026-02-15 20:04:36.256 [INFO ] [api-gateway] Batch job processed 230 records in 5678ms
+2026-02-15 20:04:36.256 [WARN ] [payment-service] Memory usage above threshold: 82% of 1024MB heap
+2026-02-15 20:04:36.281 [INFO ] [user-service] Payment processed: order #88238 amount=$1993.39 via stripe
+2026-02-15 20:04:36.281 [INFO ] [load-balancer] Email notification sent to user 10790: order_confirmation
+2026-02-15 20:04:36.281 [INFO ] [load-balancer] File uploaded: invoice_1234.pdf (3096KB) by user 8529
+2026-02-15 20:04:36.386 [WARN ] [message-queue] Memory usage above threshold: 91% of 1024MB heap
+2026-02-15 20:04:36.441 [INFO ] [message-queue] Payment processed: order #95228 amount=$2457.38 via stripe
+2026-02-15 20:04:36.546 [INFO ] [db-pool] Health check passed: all 458 dependencies healthy
+2026-02-15 20:04:36.546 [TRACE] [user-service] Connection pool stats: active=12 idle=8 total=20
+2026-02-15 20:04:36.597 [INFO ] [api-gateway] Request completed: POST /api/v1/auth/logout → 200 OK (8ms)
+2026-02-15 20:04:36.597 [DEBUG] [auth-service] Message published to queue 'order-updates' (size: 4811 bytes)
+2026-02-15 20:04:36.652 [INFO ] [payment-service] Request completed: GET /api/v1/users → 201 Created (67ms)
+2026-02-15 20:04:36.757 [DEBUG] [db-pool] Cache miss for key session:73228
+2026-02-15 20:04:36.861 [WARN ] [message-queue] Queue depth increasing: 4959 messages pending (db-pool)
+2026-02-15 20:04:36.861 [ERROR] [notification-service] Request failed: POST /api/v1/orders → 500 Internal Server Error
+thread 'tokio-runtime-worker' panicked at 'called `Option::unwrap()` on a `None` value'
+   0: std::panicking::begin_panic_handler
+   1: core::panicking::panic_fmt
+   2: app::handler::process_request at src/handler.rs:142
+2026-02-15 20:04:36.966 [DEBUG] [load-balancer] Cache hit for key user:75805 (ttl: 199s remaining)
+2026-02-15 20:04:37.171 [INFO ] [cache-manager] Email notification sent to user 19825: password_reset
+2026-02-15 20:04:37.171 [WARN ] [notification-service] Connection pool near capacity: 13/20 connections in use
+2026-02-15 20:04:37.194 [TRACE] [notification-service] Exiting method processRequest
+2026-02-15 20:04:37.194 [DEBUG] [user-service] Connection acquired from pool (active: 18/20)
+2026-02-15 20:04:37.194 [WARN ] [db-pool] Response time SLA breach: POST /api/v1/users took 1200ms (target: 500ms)
+2026-02-15 20:04:37.299 [TRACE] [db-pool] Entering method processRequest
+2026-02-15 20:04:37.299 [WARN ] [message-queue] Disk space low on /var/log: 82% used (4.4GB remaining)
+2026-02-15 20:04:37.299 [INFO ] [notification-service] User 50823 authenticated successfully from 192.168.118.170
+2026-02-15 20:04:37.324 [WARN ] [payment-service] Memory usage above threshold: 97% of 512MB heap
+2026-02-15 20:04:37.325 [INFO ] [scheduler] File uploaded: report_2024.pdf (3111KB) by user 43201
+2026-02-15 20:04:37.380 [INFO ] [notification-service] Order #76073 created: total=$495.72 items=3
+2026-02-15 20:04:37.380 [WARN ] [payment-service] Connection pool near capacity: 18/20 connections in use
+2026-02-15 20:04:37.435 [WARN ] [cache-manager] Slow query detected (1ms): SELECT * FROM orders WHERE created_at > ?
+2026-02-15 20:04:37.435 [INFO ] [payment-service] File uploaded: report_2024.pdf (1471KB) by user 2044
+2026-02-15 20:04:37.459 [INFO ] [scheduler] Order #64509 created: total=$1909.31 items=3
+2026-02-15 20:04:37.514 [INFO ] [scheduler] Health check passed: all 427 dependencies healthy
+2026-02-15 20:04:37.619 [DEBUG] [load-balancer] JWT token validated for user 69541
+2026-02-15 20:04:37.619 [DEBUG] [scheduler] JWT token validated for user 88919
+2026-02-15 20:04:37.644 [ERROR] [user-service] Circuit breaker OPEN for cache-manager: 87 failures in last 60s
+2026-02-15 20:04:37.645 [WARN ] [scheduler] Retry #415 for downstream call to payment-service (120ms timeout)
+2026-02-15 20:04:37.645 [INFO ] [cache-manager] Email notification sent to user 30311: order_confirmation
+2026-02-15 20:04:37.747 [WARN ] [message-queue] Retry #452 for downstream call to payment-service (456ms timeout)
+2026-02-15 20:04:37.802 [INFO ] [message-queue] Email notification sent to user 48345: welcome_email
+2026-02-15 20:04:37.802 [INFO ] [load-balancer] User 33766 authenticated successfully from 192.168.217.42
+2026-02-15 20:04:37.826 [INFO ] [scheduler] Request completed: GET /api/v1/payments/{id} → 201 Created (23ms)
+2026-02-15 20:04:37.881 [ERROR] [api-gateway] Payment processing failed: Stripe API returned 402 (insufficient_funds)
+java.lang.NullPointerException: Cannot invoke method on null reference
+	at com.app.service.UserService.getProfile(UserService.java:142)
+	at com.app.controller.UserController.handleGetUser(UserController.java:87)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:897)
+2026-02-15 20:04:38.086 [INFO ] [payment-service] Health check passed: all 81 dependencies healthy
+2026-02-15 20:04:38.112 [INFO ] [cache-manager] Order #83562 created: total=$1166.46 items=12
+2026-02-15 20:04:38.112 [INFO ] [cache-manager] Request completed: GET /api/v1/orders → 200 OK (120ms)
+2026-02-15 20:04:38.215 [INFO ] [payment-service] Email notification sent to user 66317: order_confirmation
+2026-02-15 20:04:38.216 [INFO ] [cache-manager] File uploaded: report_2024.pdf (586KB) by user 42552
+2026-02-15 20:04:38.216 [INFO ] [load-balancer] User 18847 authenticated successfully from 192.168.136.114
+2026-02-15 20:04:38.717 [ERROR] [scheduler] Circuit breaker OPEN for scheduler: 408 failures in last 60s
+Traceback (most recent call last):
+  File "/app/services/user_service.py", line 89, in get_user
+    user = db.query(User).filter(User.id == user_id).one()
+sqlalchemy.exc.NoResultFound: No row was found when one was required
+2026-02-15 20:04:38.772 [WARN ] [load-balancer] Memory usage above threshold: 81% of 1024MB heap
+2026-02-15 20:04:38.772 [TRACE] [auth-service] Request body size: 680 bytes
+2026-02-15 20:04:38.772 [INFO ] [user-service] Request completed: GET /api/v1/orders → 200 OK (120ms)
+2026-02-15 20:04:38.827 [INFO ] [message-queue] Payment processed: order #57721 amount=$1273.90 via stripe
+2026-02-15 20:04:38.827 [TRACE] [load-balancer] Exiting method processRequest
+2026-02-15 20:04:38.849 [INFO ] [message-queue] File uploaded: invoice_1234.pdf (1780KB) by user 44986
+2026-02-15 20:04:38.849 [DEBUG] [user-service] Processing request 04384bd for POST /api/v1/users
+2026-02-15 20:04:38.849 [DEBUG] [notification-service] Cache hit for key user:74720 (ttl: 1979s remaining)
+2026-02-15 20:04:38.904 [INFO ] [scheduler] Batch job processed 177 records in 1200ms
+2026-02-15 20:04:38.904 [DEBUG] [user-service] Connection acquired from pool (active: 17/20)
+2026-02-15 20:04:38.955 [DEBUG] [user-service] Rate limiter: 209/100 requests in current window
+2026-02-15 20:04:38.980 [INFO ] [message-queue] User 90375 authenticated successfully from 192.168.14.59
+2026-02-15 20:04:39.085 [WARN ] [db-pool] Queue depth increasing: 3565 messages pending (db-pool)
+2026-02-15 20:04:39.085 [INFO ] [load-balancer] Payment processed: order #88566 amount=$337.91 via stripe
+2026-02-15 20:04:39.085 [INFO ] [scheduler] Payment processed: order #53244 amount=$1300.59 via stripe
+2026-02-15 20:04:39.286 [INFO ] [notification-service] Request completed: PUT /api/v1/users/{id} → 201 Created (456ms)
+2026-02-15 20:04:39.286 [DEBUG] [cache-manager] Database query executed in 1ms: SELECT * FROM users WHERE id = ?
+2026-02-15 20:04:39.390 [INFO ] [message-queue] Health check passed: all 324 dependencies healthy
+2026-02-15 20:04:39.390 [INFO ] [payment-service] Request completed: PUT /api/v1/users/{id} → 200 OK (456ms)
+2026-02-15 20:04:39.390 [INFO ] [cache-manager] Payment processed: order #94390 amount=$1589.25 via stripe
+2026-02-15 20:04:39.495 [DEBUG] [message-queue] JWT token validated for user 8115
+2026-02-15 20:04:39.495 [INFO ] [api-gateway] File uploaded: export.csv (1849KB) by user 23183
+2026-02-15 20:04:39.495 [INFO ] [cache-manager] Health check passed: all 167 dependencies healthy
+2026-02-15 20:04:39.695 [DEBUG] [load-balancer] Message published to queue 'email-notifications' (size: 2786 bytes)
+2026-02-15 20:04:39.801 [INFO ] [payment-service] Health check passed: all 432 dependencies healthy
+2026-02-15 20:04:39.801 [WARN ] [payment-service] Queue depth increasing: 927 messages pending (user-service)
+2026-02-15 20:04:39.801 [INFO ] [message-queue] File uploaded: invoice_1234.pdf (965KB) by user 68844
+2026-02-15 20:04:40.806 [INFO ] [scheduler] Payment processed: order #61209 amount=$2151.90 via stripe
+2026-02-15 20:04:40.806 [INFO ] [api-gateway] Email notification sent to user 76376: order_confirmation
+2026-02-15 20:04:40.806 [INFO ] [auth-service] File uploaded: export.csv (2845KB) by user 49218
+2026-02-15 20:04:41.311 [INFO ] [notification-service] Request completed: POST /api/v1/users → 201 Created (8ms)
+2026-02-15 20:04:41.311 [ERROR] [message-queue] Invalid JSON in request body: unexpected token at position 310
+2026-02-15 20:04:41.415 [ERROR] [payment-service] Circuit breaker OPEN for auth-service: 354 failures in last 60s
+2026-02-15 20:04:41.620 [INFO ] [load-balancer] Batch job processed 266 records in 8ms
+2026-02-15 20:04:41.645 [WARN ] [payment-service] Connection pool near capacity: 11/20 connections in use
+2026-02-15 20:04:41.645 [INFO ] [scheduler] Payment processed: order #72456 amount=$1194.61 via stripe
+2026-02-15 20:04:41.645 [ERROR] [notification-service] Deadlock detected in database connection pool
+2026-02-15 20:04:41.700 [INFO ] [notification-service] Scheduled job 'send-digest-emails' completed in 1ms
+2026-02-15 20:04:42.203 [INFO ] [user-service] Request completed: PUT /api/v1/users/{id} → 200 OK (120ms)
+2026-02-15 20:04:42.204 [DEBUG] [scheduler] Cache hit for key user:91130 (ttl: 1396s remaining)
+2026-02-15 20:04:42.259 [INFO ] [user-service] File uploaded: avatar.png (3077KB) by user 3182
+2026-02-15 20:04:42.310 [DEBUG] [cache-manager] Database query executed in 3ms: SELECT * FROM users WHERE id = ?
+2026-02-15 20:04:42.331 [INFO ] [notification-service] Payment processed: order #82979 amount=$459.23 via stripe
+2026-02-15 20:04:42.437 [INFO ] [scheduler] File uploaded: export.csv (3175KB) by user 93530
+2026-02-15 20:04:42.540 [WARN ] [user-service] Response time SLA breach: DELETE /api/v1/users/{id} took 456ms (target: 500ms)
+2026-02-15 20:04:42.540 [INFO ] [message-queue] Scheduled job 'sync-inventory' completed in 120ms
+2026-02-15 20:04:42.540 [INFO ] [auth-service] Scheduled job 'cleanup-expired-sessions' completed in 5678ms
+2026-02-15 20:04:42.742 [INFO ] [auth-service] Request completed: PUT /api/v1/users/{id} → 201 Created (456ms)
+2026-02-15 20:04:42.797 [INFO ] [scheduler] Request completed: POST /api/v1/auth/login → 200 OK (456ms)
+2026-02-15 20:04:42.797 [WARN ] [scheduler] Connection pool near capacity: 13/20 connections in use
+2026-02-15 20:04:42.852 [INFO ] [message-queue] Batch job processed 224 records in 3ms
+2026-02-15 20:04:42.905 [DEBUG] [auth-service] Message published to queue 'order-updates' (size: 3198 bytes)
+2026-02-15 20:04:42.930 [INFO ] [cache-manager] User 25867 authenticated successfully from 192.168.118.114
+2026-02-15 20:04:44.935 [INFO ] [api-gateway] Scheduled job 'aggregate-metrics' completed in 5678ms
+2026-02-15 20:04:44.935 [DEBUG] [payment-service] Cache miss for key session:78211
+2026-02-15 20:04:45.440 [DEBUG] [load-balancer] Processing request 06ffdc5 for GET /api/v1/metrics
+2026-02-15 20:04:45.440 [WARN ] [db-pool] Retry #238 for downstream call to payment-service (67ms timeout)
+2026-02-15 20:04:45.440 [DEBUG] [scheduler] Cache miss for key session:78534
+2026-02-15 20:04:45.495 [DEBUG] [notification-service] Cache miss for key session:23420
+2026-02-15 20:04:45.701 [ERROR] [scheduler] Invalid JSON in request body: unexpected token at position 484
+2026-02-15 20:04:45.701 [INFO ] [payment-service] Email notification sent to user 57544: welcome_email
+2026-02-15 20:04:45.756 [DEBUG] [notification-service] Message published to queue 'analytics-events' (size: 3894 bytes)
+2026-02-15 20:04:45.756 [WARN ] [api-gateway] Response time SLA breach: POST /api/v1/payments took 1200ms (target: 500ms)
+2026-02-15 20:04:45.861 [WARN ] [load-balancer] Queue depth increasing: 3851 messages pending (load-balancer)
+2026-02-15 20:04:45.886 [ERROR] [cache-manager] Circuit breaker OPEN for scheduler: 303 failures in last 60s
+java.lang.NullPointerException: Cannot invoke method on null reference
+	at com.app.service.UserService.getProfile(UserService.java:142)
+	at com.app.controller.UserController.handleGetUser(UserController.java:87)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:897)
+2026-02-15 20:04:45.941 [TRACE] [payment-service] Connection pool stats: active=12 idle=8 total=20
+2026-02-15 20:04:46.042 [INFO ] [load-balancer] Request completed: GET /api/v1/metrics → 200 OK (456ms)
+2026-02-15 20:04:46.042 [WARN ] [payment-service] Memory usage above threshold: 83% of 512MB heap
+2026-02-15 20:04:46.042 [INFO ] [api-gateway] Request completed: POST /api/v1/users → 201 Created (23ms)
+2026-02-15 20:04:46.247 [INFO ] [db-pool] Request completed: GET /api/v1/orders → 201 Created (1ms)
+2026-02-15 20:04:46.247 [INFO ] [cache-manager] Request completed: GET /api/v1/metrics → 201 Created (5678ms)
+2026-02-15 20:04:46.272 [INFO ] [scheduler] Email notification sent to user 15410: welcome_email
+2026-02-15 20:04:46.298 [INFO ] [notification-service] Payment processed: order #20535 amount=$1830.87 via stripe
+2026-02-15 20:04:46.298 [INFO ] [auth-service] User 32349 authenticated successfully from 192.168.118.114
+2026-02-15 20:04:46.298 [DEBUG] [notification-service] JWT token validated for user 39395
+2026-02-15 20:04:46.323 [INFO ] [auth-service] Email notification sent to user 5884: payment_receipt
+2026-02-15 20:04:46.323 [INFO ] [api-gateway] Scheduled job 'aggregate-metrics' completed in 120ms
+2026-02-15 20:04:46.428 [WARN ] [cache-manager] Memory usage above threshold: 92% of 512MB heap
+2026-02-15 20:04:46.428 [INFO ] [api-gateway] Payment processed: order #41677 amount=$2216.07 via stripe
+2026-02-15 20:04:46.453 [DEBUG] [payment-service] Cache miss for key session:24149
+2026-02-15 20:04:46.453 [INFO ] [load-balancer] Request completed: GET /api/v1/orders/{id} → 201 Created (67ms)
+2026-02-15 20:04:46.558 [INFO ] [message-queue] File uploaded: export.csv (233KB) by user 6974
+2026-02-15 20:04:46.558 [WARN ] [message-queue] Disk space low on /var/log: 88% used (3.1GB remaining)
+2026-02-15 20:04:48.563 [WARN ] [api-gateway] Rate limit approaching for IP 192.168.150.247: 484/100 requests
+2026-02-15 20:04:48.617 [ERROR] [auth-service] Circuit breaker OPEN for payment-service: 293 failures in last 60s
+java.lang.NullPointerException: Cannot invoke method on null reference
+	at com.app.service.UserService.getProfile(UserService.java:142)
+	at com.app.controller.UserController.handleGetUser(UserController.java:87)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:897)
+2026-02-15 20:04:48.673 [INFO ] [db-pool] Order #68337 created: total=$148.29 items=4
+2026-02-15 20:04:48.673 [WARN ] [auth-service] Connection pool near capacity: 17/20 connections in use
+2026-02-15 20:04:48.673 [INFO ] [load-balancer] Payment processed: order #68993 amount=$1341.29 via stripe
+2026-02-15 20:04:48.778 [INFO ] [message-queue] Health check passed: all 263 dependencies healthy
+2026-02-15 20:04:48.778 [TRACE] [user-service] Serializing response payload
+2026-02-15 20:04:48.831 [ERROR] [notification-service] Circuit breaker OPEN for auth-service: 404 failures in last 60s
+2026-02-15 20:04:48.831 [INFO ] [cache-manager] File uploaded: avatar.png (4086KB) by user 99078
+2026-02-15 20:04:48.831 [INFO ] [notification-service] Order #90437 created: total=$1982.25 items=5
+2026-02-15 20:04:48.856 [INFO ] [load-balancer] Scheduled job 'aggregate-metrics' completed in 67ms
+2026-02-15 20:04:48.958 [DEBUG] [notification-service] Rate limiter: 371/100 requests in current window
+2026-02-15 20:04:49.064 [ERROR] [scheduler] Authentication failed for user 70695: invalid credentials (attempt 479/5)
+2026-02-15 20:04:49.064 [INFO ] [message-queue] Health check passed: all 52 dependencies healthy
+2026-02-15 20:04:49.064 [ERROR] [payment-service] Timeout waiting for response from message-queue after 456ms
+2026-02-15 20:04:49.119 [INFO ] [payment-service] Batch job processed 148 records in 1200ms
+2026-02-15 20:04:49.119 [WARN ] [scheduler] Memory usage above threshold: 93% of 2048MB heap
+2026-02-15 20:04:49.174 [DEBUG] [notification-service] Processing request 02e61fd for GET /api/v1/health
+2026-02-15 20:04:49.279 [INFO ] [auth-service] Request completed: GET /api/v1/metrics → 200 OK (5678ms)
+2026-02-15 20:04:49.279 [TRACE] [payment-service] Exiting method processRequest
+2026-02-15 20:04:49.279 [TRACE] [cache-manager] Serializing response payload
+2026-02-15 20:04:49.334 [INFO ] [cache-manager] Email notification sent to user 28396: order_confirmation
+2026-02-15 20:04:49.359 [INFO ] [payment-service] Payment processed: order #84462 amount=$2488.77 via stripe
+2026-02-15 20:04:49.464 [ERROR] [auth-service] Invalid JSON in request body: unexpected token at position 240
+2026-02-15 20:04:49.464 [INFO ] [scheduler] Request completed: GET /api/v1/payments/{id} → 201 Created (23ms)
+2026-02-15 20:04:49.464 [INFO ] [user-service] File uploaded: export.csv (2046KB) by user 51539
+2026-02-15 20:04:49.667 [TRACE] [message-queue] Cache key lookup: user:54483
+2026-02-15 20:04:49.667 [INFO ] [db-pool] File uploaded: invoice_1234.pdf (4074KB) by user 50418
+2026-02-15 20:04:49.667 [DEBUG] [db-pool] Processing request 0330668 for GET /api/v1/products/{id}
+2026-02-15 20:04:49.692 [INFO ] [user-service] Request completed: POST /api/v1/auth/logout → 200 OK (120ms)
+2026-02-15 20:04:49.717 [INFO ] [notification-service] User 63537 authenticated successfully from 192.168.14.59
+2026-02-15 20:04:49.717 [INFO ] [cache-manager] Order #83549 created: total=$1441.22 items=9
+2026-02-15 20:04:49.717 [WARN ] [user-service] Disk space low on /var/log: 84% used (1.9GB remaining)
+2026-02-15 20:04:49.772 [DEBUG] [cache-manager] Database query executed in 1ms: SELECT * FROM users WHERE id = ?
+2026-02-15 20:04:49.772 [INFO ] [notification-service] Email notification sent to user 45885: order_confirmation
+2026-02-15 20:04:49.877 [INFO ] [payment-service] Health check passed: all 214 dependencies healthy
+2026-02-15 20:04:49.877 [INFO ] [auth-service] Order #80185 created: total=$305.28 items=6
+2026-02-15 20:04:49.982 [DEBUG] [payment-service] JWT token validated for user 77800
+2026-02-15 20:04:49.982 [INFO ] [payment-service] User 72130 authenticated successfully from 192.168.208.201
+2026-02-15 20:04:50.035 [INFO ] [api-gateway] Payment processed: order #61763 amount=$772.94 via stripe
+2026-02-15 20:04:50.090 [INFO ] [scheduler] User 68732 authenticated successfully from 192.168.150.247
+2026-02-15 20:04:50.090 [WARN ] [auth-service] Connection pool near capacity: 19/20 connections in use
+2026-02-15 20:04:50.295 [INFO ] [notification-service] Request completed: GET /api/v1/users/{id} → 200 OK (8ms)
+2026-02-15 20:04:50.295 [INFO ] [message-queue] Health check passed: all 44 dependencies healthy
+2026-02-15 20:04:50.350 [WARN ] [scheduler] Disk space low on /var/log: 88% used (1.9GB remaining)
+2026-02-15 20:04:50.350 [INFO ] [payment-service] Request completed: GET /api/v1/products → 200 OK (8ms)
+2026-02-15 20:04:50.552 [WARN ] [scheduler] Disk space low on /var/log: 81% used (2.6GB remaining)
+2026-02-15 20:04:50.552 [INFO ] [payment-service] Request completed: PUT /api/v1/users/{id} → 201 Created (456ms)
+2026-02-15 20:04:50.757 [INFO ] [message-queue] Scheduled job 'sync-inventory' completed in 120ms
+2026-02-15 20:04:51.262 [INFO ] [load-balancer] Health check passed: all 223 dependencies healthy
+2026-02-15 20:04:51.468 [INFO ] [db-pool] Health check passed: all 406 dependencies healthy
+2026-02-15 20:04:51.573 [WARN ] [scheduler] Queue depth increasing: 2352 messages pending (message-queue)
+2026-02-15 20:04:51.573 [INFO ] [cache-manager] Scheduled job 'cleanup-expired-sessions' completed in 67ms
+2026-02-15 20:04:51.573 [INFO ] [load-balancer] Batch job processed 236 records in 5678ms
+2026-02-15 20:04:51.628 [WARN ] [load-balancer] Memory usage above threshold: 81% of 2048MB heap
+2026-02-15 20:04:51.628 [INFO ] [api-gateway] Health check passed: all 422 dependencies healthy
+2026-02-15 20:04:51.628 [INFO ] [api-gateway] User 16876 authenticated successfully from 192.168.197.14
+2026-02-15 20:04:51.732 [INFO ] [user-service] Batch job processed 465 records in 23ms
+2026-02-15 20:04:51.836 [ERROR] [message-queue] Deadlock detected in database connection pool
+2026-02-15 20:04:51.836 [INFO ] [load-balancer] Request completed: POST /api/v1/auth/logout → 200 OK (456ms)
+2026-02-15 20:04:51.837 [WARN ] [api-gateway] Connection pool near capacity: 12/20 connections in use
+2026-02-15 20:04:51.862 [INFO ] [db-pool] Batch job processed 500 records in 1ms
+2026-02-15 20:04:51.862 [INFO ] [user-service] Payment processed: order #77403 amount=$2419.51 via stripe
+2026-02-15 20:04:51.862 [WARN ] [message-queue] Rate limit approaching for IP 192.168.80.120: 353/100 requests
+2026-02-15 20:04:52.067 [WARN ] [payment-service] Queue depth increasing: 2286 messages pending (notification-service)
+2026-02-15 20:04:52.067 [TRACE] [db-pool] Entering method processRequest
+2026-02-15 20:04:52.067 [INFO ] [api-gateway] Health check passed: all 326 dependencies healthy
+2026-02-15 20:04:52.270 [INFO ] [notification-service] Email notification sent to user 19027: password_reset
+2026-02-15 20:04:52.325 [DEBUG] [load-balancer] Message published to queue 'order-updates' (size: 896 bytes)
+2026-02-15 20:04:52.325 [WARN ] [scheduler] Queue depth increasing: 4395 messages pending (db-pool)
+2026-02-15 20:04:52.325 [INFO ] [scheduler] File uploaded: invoice_1234.pdf (596KB) by user 67657
+2026-02-15 20:04:54.330 [INFO ] [db-pool] Scheduled job 'sync-inventory' completed in 5678ms
+2026-02-15 20:04:54.331 [DEBUG] [user-service] Database query executed in 3ms: SELECT * FROM users WHERE id = ?
+2026-02-15 20:04:54.331 [INFO ] [notification-service] Order #43351 created: total=$1712.72 items=10
+2026-02-15 20:04:55.332 [INFO ] [user-service] Payment processed: order #20192 amount=$2390.68 via stripe
+2026-02-15 20:04:55.437 [WARN ] [notification-service] Connection pool near capacity: 15/20 connections in use
+2026-02-15 20:04:55.437 [INFO ] [scheduler] Email notification sent to user 7982: welcome_email
+2026-02-15 20:04:56.442 [WARN ] [message-queue] Retry #788 for downstream call to payment-service (23ms timeout)
+2026-02-15 20:04:56.442 [INFO ] [message-queue] User 60396 authenticated successfully from 192.168.80.120
+2026-02-15 20:04:56.442 [INFO ] [api-gateway] Health check passed: all 441 dependencies healthy
+2026-02-15 20:04:56.548 [INFO ] [notification-service] Request completed: PUT /api/v1/users/{id} → 201 Created (5678ms)
+2026-02-15 20:04:56.548 [INFO ] [scheduler] Request completed: PUT /api/v1/users/{id} → 201 Created (456ms)
+2026-02-15 20:04:56.548 [WARN ] [notification-service] Connection pool near capacity: 11/20 connections in use
+2026-02-15 20:04:56.750 [ERROR] [user-service] Invalid JSON in request body: unexpected token at position 21
+2026-02-15 20:04:56.750 [INFO ] [notification-service] Payment processed: order #59252 amount=$567.91 via stripe
+2026-02-15 20:04:56.750 [DEBUG] [payment-service] Database query executed in 1200ms: SELECT * FROM users WHERE id = ?
+2026-02-15 20:04:56.776 [INFO ] [user-service] Order #37463 created: total=$1582.97 items=1
+2026-02-15 20:04:56.776 [DEBUG] [auth-service] Cache miss for key session:81856
+2026-02-15 20:04:56.830 [DEBUG] [db-pool] Processing request 05b50b8 for GET /api/v1/orders
+2026-02-15 20:04:57.035 [WARN ] [payment-service] Connection pool near capacity: 11/20 connections in use
+2026-02-15 20:04:57.140 [INFO ] [scheduler] Scheduled job 'send-digest-emails' completed in 23ms
+2026-02-15 20:04:57.140 [INFO ] [db-pool] Request completed: POST /api/v1/orders → 200 OK (5678ms)
+2026-02-15 20:04:57.140 [INFO ] [payment-service] Request completed: PUT /api/v1/users/{id} → 201 Created (8ms)
+2026-02-15 20:04:57.165 [INFO ] [payment-service] Batch job processed 468 records in 5678ms
+2026-02-15 20:04:57.166 [INFO ] [user-service] Batch job processed 493 records in 1200ms
+2026-02-15 20:04:57.186 [INFO ] [db-pool] Order #59094 created: total=$1700.80 items=6
+2026-02-15 20:04:57.239 [INFO ] [load-balancer] Email notification sent to user 46211: order_confirmation
+2026-02-15 20:04:57.264 [INFO ] [message-queue] File uploaded: report_2024.pdf (833KB) by user 87430
+2026-02-15 20:04:57.264 [INFO ] [notification-service] Batch job processed 357 records in 67ms
+2026-02-15 20:04:57.264 [INFO ] [load-balancer] Request completed: GET /api/v1/orders → 201 Created (5678ms)
+2026-02-15 20:04:57.319 [INFO ] [scheduler] Request completed: GET /api/v1/orders → 201 Created (1200ms)
+2026-02-15 20:04:57.319 [INFO ] [payment-service] Payment processed: order #67238 amount=$2187.04 via stripe
+2026-02-15 20:04:57.375 [INFO ] [api-gateway] Order #97614 created: total=$1851.53 items=4
+2026-02-15 20:04:57.430 [INFO ] [scheduler] Scheduled job 'send-digest-emails' completed in 23ms
+2026-02-15 20:04:57.485 [INFO ] [scheduler] Request completed: GET /api/v1/orders/{id} → 201 Created (23ms)
+2026-02-15 20:04:57.485 [INFO ] [load-balancer] Scheduled job 'cleanup-expired-sessions' completed in 67ms
+2026-02-15 20:04:57.485 [INFO ] [auth-service] File uploaded: export.csv (4564KB) by user 31703
+2026-02-15 20:04:57.510 [INFO ] [auth-service] Scheduled job 'sync-inventory' completed in 1200ms
+2026-02-15 20:04:57.510 [INFO ] [api-gateway] Request completed: GET /api/v1/products/{id} → 200 OK (67ms)
+2026-02-15 20:04:57.510 [DEBUG] [scheduler] Connection acquired from pool (active: 19/20)
+2026-02-15 20:04:57.565 [DEBUG] [db-pool] Cache miss for key session:28796
+2026-02-15 20:04:57.565 [DEBUG] [api-gateway] Database query executed in 120ms: SELECT * FROM users WHERE id = ?
+2026-02-15 20:04:57.565 [INFO ] [scheduler] Health check passed: all 63 dependencies healthy
+2026-02-15 20:04:57.670 [TRACE] [load-balancer] Cache key lookup: user:77743
+2026-02-15 20:04:57.670 [INFO ] [message-queue] File uploaded: report_2024.pdf (4377KB) by user 70734
+2026-02-15 20:04:57.725 [WARN ] [cache-manager] Rate limit approaching for IP 192.168.146.237: 431/100 requests
+2026-02-15 20:04:57.725 [WARN ] [message-queue] Connection pool near capacity: 20/20 connections in use
+2026-02-15 20:04:57.830 [INFO ] [auth-service] Email notification sent to user 84845: order_confirmation
+2026-02-15 20:04:57.830 [INFO ] [notification-service] Health check passed: all 453 dependencies healthy
+2026-02-15 20:04:57.885 [INFO ] [payment-service] Batch job processed 13 records in 3ms
+2026-02-15 20:04:57.885 [INFO ] [payment-service] Request completed: GET /api/v1/payments/{id} → 200 OK (3ms)
+2026-02-15 20:04:57.940 [WARN ] [message-queue] Disk space low on /var/log: 80% used (1.4GB remaining)
+2026-02-15 20:04:57.940 [INFO ] [load-balancer] User 48170 authenticated successfully from 192.168.135.122
+2026-02-15 20:04:58.045 [INFO ] [notification-service] Email notification sent to user 11924: welcome_email
+2026-02-15 20:04:58.046 [INFO ] [auth-service] Order #49570 created: total=$1429.76 items=4
+2026-02-15 20:04:58.046 [INFO ] [cache-manager] User 9157 authenticated successfully from 192.168.171.221
+2026-02-15 20:04:58.548 [INFO ] [user-service] Health check passed: all 184 dependencies healthy
+2026-02-15 20:04:58.548 [INFO ] [user-service] Scheduled job 'sync-inventory' completed in 8ms
+2026-02-15 20:04:58.548 [INFO ] [notification-service] Email notification sent to user 64619: password_reset
+2026-02-15 20:04:58.573 [INFO ] [user-service] User 97530 authenticated successfully from 192.168.208.201
+2026-02-15 20:04:58.573 [TRACE] [api-gateway] Exiting method processRequest
+2026-02-15 20:04:58.597 [INFO ] [db-pool] User 44392 authenticated successfully from 192.168.113.11
+2026-02-15 20:04:58.650 [DEBUG] [cache-manager] JWT token validated for user 50220
+2026-02-15 20:04:58.650 [WARN ] [auth-service] Rate limit approaching for IP 192.168.221.125: 98/100 requests
+2026-02-15 20:04:58.676 [INFO ] [cache-manager] Order #31534 created: total=$2022.03 items=4
+2026-02-15 20:04:58.676 [INFO ] [scheduler] Scheduled job 'sync-inventory' completed in 1ms
+2026-02-15 20:04:59.181 [INFO ] [notification-service] Health check passed: all 308 dependencies healthy
+2026-02-15 20:04:59.181 [INFO ] [auth-service] Request completed: GET /api/v1/health → 201 Created (8ms)
+2026-02-15 20:04:59.181 [INFO ] [payment-service] File uploaded: report_2024.pdf (4736KB) by user 35107
+2026-02-15 20:04:59.284 [INFO ] [load-balancer] Payment processed: order #51560 amount=$2164.26 via stripe
+2026-02-15 20:04:59.285 [DEBUG] [cache-manager] Processing request 03da8d2 for GET /api/v1/users
+2026-02-15 20:04:59.285 [INFO ] [notification-service] Order #17751 created: total=$2327.79 items=11
+2026-02-15 20:04:59.490 [WARN ] [load-balancer] Connection pool near capacity: 12/20 connections in use
+2026-02-15 20:04:59.515 [WARN ] [payment-service] Connection pool near capacity: 12/20 connections in use
+2026-02-15 20:04:59.515 [ERROR] [load-balancer] Database connection failed: connection refused (postgresql://db:5432/app)
+2026-02-15 20:04:59.515 [ERROR] [payment-service] Circuit breaker OPEN for api-gateway: 489 failures in last 60s
+java.lang.NullPointerException: Cannot invoke method on null reference
+	at com.app.service.UserService.getProfile(UserService.java:142)
+	at com.app.controller.UserController.handleGetUser(UserController.java:87)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:897)
+2026-02-15 20:05:00.020 [INFO ] [auth-service] Order #75513 created: total=$2104.81 items=12
+2026-02-15 20:05:00.020 [INFO ] [auth-service] Email notification sent to user 87014: welcome_email
+2026-02-15 20:05:00.074 [INFO ] [api-gateway] Scheduled job 'aggregate-metrics' completed in 8ms
+2026-02-15 20:05:00.277 [WARN ] [auth-service] Connection pool near capacity: 15/20 connections in use
+2026-02-15 20:05:00.277 [INFO ] [cache-manager] Payment processed: order #32356 amount=$1394.03 via stripe
+2026-02-15 20:05:00.277 [INFO ] [cache-manager] File uploaded: report_2024.pdf (4986KB) by user 2521
+2026-02-15 20:05:00.302 [INFO ] [db-pool] Email notification sent to user 60565: order_confirmation
+2026-02-15 20:05:00.302 [INFO ] [api-gateway] Email notification sent to user 81622: order_confirmation
+2026-02-15 20:05:00.302 [INFO ] [api-gateway] Scheduled job 'aggregate-metrics' completed in 3ms
+2026-02-15 20:05:00.408 [INFO ] [api-gateway] Payment processed: order #56833 amount=$2374.39 via stripe
+2026-02-15 20:05:00.408 [INFO ] [user-service] Payment processed: order #67393 amount=$251.81 via stripe
+2026-02-15 20:05:00.408 [DEBUG] [payment-service] Rate limiter: 84/100 requests in current window
+2026-02-15 20:05:00.433 [WARN ] [api-gateway] Connection pool near capacity: 16/20 connections in use
+2026-02-15 20:05:00.433 [INFO ] [user-service] Batch job processed 341 records in 120ms
+2026-02-15 20:05:00.454 [INFO ] [payment-service] Email notification sent to user 60403: payment_receipt
+2026-02-15 20:05:00.454 [DEBUG] [load-balancer] Message published to queue 'email-notifications' (size: 3991 bytes)
+2026-02-15 20:05:00.454 [WARN ] [notification-service] Retry #429 for downstream call to payment-service (23ms timeout)
+2026-02-15 20:05:00.479 [INFO ] [scheduler] Order #32999 created: total=$174.19 items=5
+2026-02-15 20:05:00.982 [INFO ] [user-service] Order #94825 created: total=$1390.52 items=12
+2026-02-15 20:05:01.037 [INFO ] [scheduler] Batch job processed 311 records in 8ms
+2026-02-15 20:05:01.037 [INFO ] [db-pool] Request completed: GET /api/v1/metrics → 200 OK (3ms)
+2026-02-15 20:05:01.062 [DEBUG] [scheduler] Rate limiter: 310/100 requests in current window
+2026-02-15 20:05:01.062 [WARN ] [message-queue] Retry #138 for downstream call to payment-service (3ms timeout)
+2026-02-15 20:05:01.165 [INFO ] [auth-service] Request completed: GET /api/v1/products → 201 Created (120ms)
+2026-02-15 20:05:01.165 [INFO ] [notification-service] Scheduled job 'cleanup-expired-sessions' completed in 8ms
+2026-02-15 20:05:01.220 [DEBUG] [auth-service] Connection acquired from pool (active: 10/20)
+2026-02-15 20:05:01.241 [WARN ] [auth-service] Rate limit approaching for IP 192.168.136.114: 397/100 requests
+2026-02-15 20:05:01.241 [WARN ] [message-queue] Queue depth increasing: 3334 messages pending (user-service)
+2026-02-15 20:05:01.296 [INFO ] [message-queue] Request completed: GET /api/v1/products → 201 Created (8ms)
+2026-02-15 20:05:01.318 [INFO ] [cache-manager] Request completed: GET /api/v1/products → 200 OK (1ms)
+2026-02-15 20:05:01.318 [DEBUG] [api-gateway] Processing request 06f1624 for POST /api/v1/users
+2026-02-15 20:05:01.318 [INFO ] [load-balancer] User 85294 authenticated successfully from 192.168.98.116
+2026-02-15 20:05:01.520 [INFO ] [api-gateway] File uploaded: report_2024.pdf (1339KB) by user 63228
+2026-02-15 20:05:01.520 [WARN ] [cache-manager] Connection pool near capacity: 12/20 connections in use
+2026-02-15 20:05:01.520 [INFO ] [load-balancer] Order #12947 created: total=$1854.71 items=11
+2026-02-15 20:05:01.575 [WARN ] [payment-service] Memory usage above threshold: 92% of 4096MB heap
+2026-02-15 20:05:01.575 [INFO ] [auth-service] User 19325 authenticated successfully from 192.168.221.125
+2026-02-15 20:05:01.575 [INFO ] [api-gateway] Scheduled job 'cleanup-expired-sessions' completed in 67ms
+2026-02-15 20:05:01.680 [DEBUG] [scheduler] Rate limiter: 261/100 requests in current window
+2026-02-15 20:05:01.735 [WARN ] [notification-service] Rate limit approaching for IP 192.168.113.11: 36/100 requests
+2026-02-15 20:05:01.790 [INFO ] [db-pool] Request completed: GET /api/v1/products/{id} → 200 OK (3ms)
+2026-02-15 20:05:01.790 [INFO ] [payment-service] User 57660 authenticated successfully from 192.168.71.199
+2026-02-15 20:05:01.846 [INFO ] [scheduler] Scheduled job 'send-digest-emails' completed in 23ms
+2026-02-15 20:05:01.869 [WARN ] [cache-manager] Memory usage above threshold: 83% of 512MB heap
+2026-02-15 20:05:01.869 [WARN ] [db-pool] Connection pool near capacity: 17/20 connections in use
+2026-02-15 20:05:01.869 [DEBUG] [api-gateway] Rate limiter: 271/100 requests in current window
+2026-02-15 20:05:02.070 [INFO ] [auth-service] Request completed: GET /api/v1/metrics → 201 Created (23ms)
+2026-02-15 20:05:02.070 [ERROR] [db-pool] Timeout waiting for response from cache-manager after 5678ms
+2026-02-15 20:05:02.572 [INFO ] [auth-service] Health check passed: all 458 dependencies healthy
+2026-02-15 20:05:02.677 [WARN ] [db-pool] Memory usage above threshold: 80% of 2048MB heap
+2026-02-15 20:05:02.677 [WARN ] [api-gateway] Rate limit approaching for IP 192.168.136.114: 327/100 requests
+2026-02-15 20:05:02.732 [INFO ] [db-pool] Scheduled job 'send-digest-emails' completed in 23ms
+2026-02-15 20:05:02.732 [INFO ] [message-queue] Request completed: PUT /api/v1/users/{id} → 200 OK (67ms)
+2026-02-15 20:05:02.732 [WARN ] [notification-service] Slow query detected (23ms): SELECT * FROM orders WHERE created_at > ?
+2026-02-15 20:05:02.755 [INFO ] [user-service] Scheduled job 'cleanup-expired-sessions' completed in 23ms
+2026-02-15 20:05:02.755 [INFO ] [cache-manager] Health check passed: all 353 dependencies healthy
+2026-02-15 20:05:03.260 [WARN ] [api-gateway] Queue depth increasing: 4925 messages pending (auth-service)
+2026-02-15 20:05:03.260 [WARN ] [message-queue] Queue depth increasing: 1358 messages pending (payment-service)
+2026-02-15 20:05:03.465 [INFO ] [load-balancer] Request completed: GET /api/v1/products/{id} → 201 Created (8ms)
+2026-02-15 20:05:04.470 [DEBUG] [notification-service] Cache hit for key user:63838 (ttl: 3194s remaining)
+2026-02-15 20:05:04.470 [INFO ] [auth-service] Request completed: GET /api/v1/users/{id} → 201 Created (3ms)
+2026-02-15 20:05:04.526 [INFO ] [payment-service] Scheduled job 'send-digest-emails' completed in 67ms
+2026-02-15 20:05:04.526 [INFO ] [scheduler] Scheduled job 'aggregate-metrics' completed in 8ms
+2026-02-15 20:05:04.526 [INFO ] [scheduler] Order #94779 created: total=$1250.40 items=8
+2026-02-15 20:05:04.581 [INFO ] [auth-service] User 74467 authenticated successfully from 192.168.118.170
+2026-02-15 20:05:04.581 [INFO ] [load-balancer] Email notification sent to user 80850: order_confirmation
+2026-02-15 20:05:04.581 [INFO ] [user-service] Batch job processed 66 records in 456ms
+2026-02-15 20:05:04.686 [INFO ] [db-pool] Request completed: POST /api/v1/auth/login → 200 OK (8ms)
+2026-02-15 20:05:04.686 [INFO ] [message-queue] Request completed: POST /api/v1/users → 201 Created (1200ms)
+2026-02-15 20:05:04.711 [DEBUG] [db-pool] JWT token validated for user 90674
+2026-02-15 20:05:04.765 [INFO ] [notification-service] Scheduled job 'sync-inventory' completed in 3ms
+2026-02-15 20:05:04.765 [INFO ] [auth-service] File uploaded: report_2024.pdf (1824KB) by user 31922
+2026-02-15 20:05:04.765 [ERROR] [auth-service] Invalid JSON in request body: unexpected token at position 461
+2026-02-15 20:05:04.788 [INFO ] [cache-manager] Order #62254 created: total=$955.24 items=12
+2026-02-15 20:05:04.892 [INFO ] [message-queue] User 18499 authenticated successfully from 192.168.118.170
+2026-02-15 20:05:04.892 [DEBUG] [user-service] Rate limiter: 88/100 requests in current window
+2026-02-15 20:05:04.892 [DEBUG] [load-balancer] Rate limiter: 177/100 requests in current window
+2026-02-15 20:05:04.944 [WARN ] [api-gateway] Rate limit approaching for IP 192.168.171.221: 167/100 requests
+2026-02-15 20:05:04.944 [DEBUG] [db-pool] Processing request 026b90b for DELETE /api/v1/users/{id}
+2026-02-15 20:05:04.970 [INFO ] [payment-service] Scheduled job 'cleanup-expired-sessions' completed in 120ms
+2026-02-15 20:05:04.970 [WARN ] [cache-manager] Memory usage above threshold: 91% of 4096MB heap
+2026-02-15 20:05:05.075 [INFO ] [load-balancer] Batch job processed 10 records in 3ms
+2026-02-15 20:05:05.075 [INFO ] [auth-service] Payment processed: order #26391 amount=$2337.62 via stripe
+2026-02-15 20:05:05.075 [INFO ] [message-queue] Health check passed: all 347 dependencies healthy
+2026-02-15 20:05:05.178 [TRACE] [message-queue] Cache key lookup: user:40702
+2026-02-15 20:05:05.179 [DEBUG] [auth-service] Processing request 0715d80 for GET /api/v1/metrics
+2026-02-15 20:05:05.200 [WARN ] [api-gateway] Connection pool near capacity: 11/20 connections in use
+2026-02-15 20:05:05.200 [INFO ] [scheduler] Email notification sent to user 60242: payment_receipt
+2026-02-15 20:05:05.200 [DEBUG] [payment-service] Message published to queue 'order-updates' (size: 2323 bytes)
+2026-02-15 20:05:05.255 [INFO ] [db-pool] Scheduled job 'aggregate-metrics' completed in 1200ms
+2026-02-15 20:05:05.255 [INFO ] [load-balancer] Request completed: GET /api/v1/payments/{id} → 201 Created (1200ms)
+2026-02-15 20:05:05.460 [DEBUG] [scheduler] Cache hit for key user:11631 (ttl: 3286s remaining)
+2026-02-15 20:05:05.460 [DEBUG] [message-queue] Processing request 03da8d2 for GET /api/v1/payments/{id}
+2026-02-15 20:05:05.560 [INFO ] [load-balancer] Request completed: GET /api/v1/users/{id} → 201 Created (8ms)
+2026-02-15 20:05:05.615 [INFO ] [scheduler] Order #76011 created: total=$1247.74 items=12
+2026-02-15 20:05:05.615 [INFO ] [load-balancer] User 35320 authenticated successfully from 192.168.208.201
+2026-02-15 20:05:05.666 [INFO ] [payment-service] Request completed: POST /api/v1/notifications/send → 201 Created (456ms)
+2026-02-15 20:05:05.871 [ERROR] [db-pool] Circuit breaker OPEN for db-pool: 417 failures in last 60s
+2026-02-15 20:05:05.871 [WARN ] [load-balancer] Memory usage above threshold: 78% of 512MB heap
+2026-02-15 20:05:05.871 [WARN ] [auth-service] Queue depth increasing: 1572 messages pending (message-queue)
+2026-02-15 20:05:05.975 [INFO ] [scheduler] Health check passed: all 356 dependencies healthy
+2026-02-15 20:05:06.030 [INFO ] [cache-manager] User 61949 authenticated successfully from 192.168.98.116
+2026-02-15 20:05:06.030 [DEBUG] [notification-service] Connection acquired from pool (active: 13/20)
+2026-02-15 20:05:06.085 [INFO ] [db-pool] File uploaded: invoice_1234.pdf (2767KB) by user 51278
+2026-02-15 20:05:06.085 [INFO ] [api-gateway] File uploaded: avatar.png (1921KB) by user 40399
+2026-02-15 20:05:06.085 [ERROR] [cache-manager] Payment processing failed: Stripe API returned 402 (insufficient_funds)
+java.lang.NullPointerException: Cannot invoke method on null reference
+	at com.app.service.UserService.getProfile(UserService.java:142)
+	at com.app.controller.UserController.handleGetUser(UserController.java:87)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:897)
+2026-02-15 20:05:06.140 [WARN ] [db-pool] Connection pool near capacity: 15/20 connections in use
+2026-02-15 20:05:06.140 [WARN ] [cache-manager] Rate limit approaching for IP 192.168.205.202: 133/100 requests
+2026-02-15 20:05:06.140 [INFO ] [notification-service] Payment processed: order #68507 amount=$196.24 via stripe
+2026-02-15 20:05:06.195 [DEBUG] [db-pool] Database query executed in 3ms: SELECT * FROM users WHERE id = ?
+2026-02-15 20:05:06.218 [WARN ] [notification-service] Memory usage above threshold: 89% of 1024MB heap
+2026-02-15 20:05:06.218 [DEBUG] [auth-service] JWT token validated for user 78694
+2026-02-15 20:05:06.218 [DEBUG] [notification-service] Processing request 048c708 for POST /api/v1/auth/login
+2026-02-15 20:05:06.242 [INFO ] [api-gateway] Batch job processed 80 records in 67ms
+2026-02-15 20:05:06.242 [TRACE] [scheduler] Serializing response payload
+2026-02-15 20:05:06.345 [INFO ] [db-pool] Health check passed: all 303 dependencies healthy
+2026-02-15 20:05:06.370 [INFO ] [user-service] Payment processed: order #87742 amount=$295.85 via stripe
+2026-02-15 20:05:06.425 [WARN ] [message-queue] Disk space low on /var/log: 80% used (1.9GB remaining)
+2026-02-15 20:05:06.425 [TRACE] [message-queue] Cache key lookup: user:33566
+2026-02-15 20:05:06.425 [WARN ] [user-service] Disk space low on /var/log: 80% used (2.2GB remaining)
+2026-02-15 20:05:06.630 [DEBUG] [load-balancer] Rate limiter: 55/100 requests in current window
+2026-02-15 20:05:06.630 [INFO ] [db-pool] Batch job processed 60 records in 1200ms
+2026-02-15 20:05:06.630 [INFO ] [user-service] Batch job processed 273 records in 5678ms
+2026-02-15 20:05:06.655 [ERROR] [load-balancer] Database connection failed: connection refused (postgresql://db:5432/app)
+2026-02-15 20:05:06.680 [INFO ] [scheduler] Scheduled job 'sync-inventory' completed in 456ms
+2026-02-15 20:05:06.680 [DEBUG] [cache-manager] JWT token validated for user 51761
+2026-02-15 20:05:06.881 [WARN ] [load-balancer] Connection pool near capacity: 17/20 connections in use
+2026-02-15 20:05:07.086 [INFO ] [api-gateway] Batch job processed 312 records in 3ms
+2026-02-15 20:05:07.112 [WARN ] [api-gateway] Queue depth increasing: 4376 messages pending (notification-service)
+2026-02-15 20:05:07.112 [INFO ] [api-gateway] Email notification sent to user 32627: welcome_email
+2026-02-15 20:05:07.112 [INFO ] [scheduler] Scheduled job 'cleanup-expired-sessions' completed in 67ms
+2026-02-15 20:05:07.133 [INFO ] [api-gateway] Email notification sent to user 72288: order_confirmation
+2026-02-15 20:05:07.133 [DEBUG] [message-queue] Message published to queue 'order-updates' (size: 1021 bytes)
+2026-02-15 20:05:07.133 [WARN ] [cache-manager] Memory usage above threshold: 97% of 512MB heap
+2026-02-15 20:05:07.186 [INFO ] [scheduler] Email notification sent to user 14553: welcome_email
+2026-02-15 20:05:07.187 [INFO ] [user-service] Health check passed: all 384 dependencies healthy
+2026-02-15 20:05:07.187 [DEBUG] [auth-service] Rate limiter: 237/100 requests in current window
+2026-02-15 20:05:07.288 [WARN ] [notification-service] Retry #498 for downstream call to payment-service (67ms timeout)
+2026-02-15 20:05:07.288 [WARN ] [user-service] Memory usage above threshold: 82% of 4096MB heap
+2026-02-15 20:05:07.393 [DEBUG] [user-service] Message published to queue 'payment-processing' (size: 2051 bytes)
+2026-02-15 20:05:07.393 [INFO ] [payment-service] Scheduled job 'sync-inventory' completed in 1ms
+2026-02-15 20:05:07.393 [WARN ] [auth-service] Slow query detected (5678ms): SELECT * FROM orders WHERE created_at > ?
+2026-02-15 20:05:09.398 [INFO ] [user-service] Payment processed: order #64213 amount=$1215.19 via stripe
+2026-02-15 20:05:09.450 [INFO ] [scheduler] Health check passed: all 224 dependencies healthy
+2026-02-15 20:05:09.450 [WARN ] [message-queue] Queue depth increasing: 2987 messages pending (user-service)
+2026-02-15 20:05:09.450 [INFO ] [scheduler] Scheduled job 'cleanup-expired-sessions' completed in 8ms
+2026-02-15 20:05:09.655 [ERROR] [payment-service] Circuit breaker OPEN for load-balancer: 182 failures in last 60s
+2026-02-15 20:05:09.656 [INFO ] [payment-service] Payment processed: order #65222 amount=$2120.97 via stripe
+2026-02-15 20:05:09.861 [INFO ] [payment-service] Batch job processed 264 records in 456ms
+2026-02-15 20:05:09.916 [INFO ] [load-balancer] Email notification sent to user 97406: payment_receipt
+2026-02-15 20:05:09.916 [WARN ] [cache-manager] Queue depth increasing: 4043 messages pending (db-pool)
+2026-02-15 20:05:10.118 [DEBUG] [payment-service] Processing request 07bcf3f for GET /api/v1/metrics
+2026-02-15 20:05:10.143 [INFO ] [scheduler] Order #86752 created: total=$196.84 items=3
+2026-02-15 20:05:10.248 [DEBUG] [db-pool] Processing request 0555e56 for POST /api/v1/orders
+2026-02-15 20:05:10.248 [DEBUG] [scheduler] JWT token validated for user 29733
+2026-02-15 20:05:10.248 [INFO ] [user-service] Request completed: GET /api/v1/metrics → 200 OK (23ms)
+2026-02-15 20:05:10.303 [DEBUG] [api-gateway] Rate limiter: 401/100 requests in current window
+2026-02-15 20:05:10.303 [INFO ] [message-queue] Order #81042 created: total=$360.98 items=9
+2026-02-15 20:05:10.303 [ERROR] [cache-manager] Authentication failed for user 86963: invalid credentials (attempt 538/5)
+2026-02-15 20:05:10.328 [INFO ] [db-pool] Request completed: GET /api/v1/orders → 201 Created (23ms)
+2026-02-15 20:05:10.328 [WARN ] [auth-service] Response time SLA breach: GET /api/v1/products took 120ms (target: 500ms)
+2026-02-15 20:05:10.328 [INFO ] [cache-manager] Request completed: GET /api/v1/products/{id} → 200 OK (67ms)
+2026-02-15 20:05:10.830 [INFO ] [api-gateway] Scheduled job 'send-digest-emails' completed in 5678ms
+2026-02-15 20:05:10.830 [ERROR] [db-pool] Deadlock detected in database connection pool
+2026-02-15 20:05:10.933 [WARN ] [payment-service] Queue depth increasing: 882 messages pending (auth-service)
+2026-02-15 20:05:11.138 [INFO ] [db-pool] Scheduled job 'cleanup-expired-sessions' completed in 1200ms
+2026-02-15 20:05:11.138 [INFO ] [db-pool] Order #19677 created: total=$890.68 items=11
+2026-02-15 20:05:11.643 [DEBUG] [message-queue] Cache miss for key session:28787
+2026-02-15 20:05:11.643 [ERROR] [scheduler] Circuit breaker OPEN for db-pool: 442 failures in last 60s
+2026-02-15 20:05:11.643 [DEBUG] [load-balancer] Message published to queue 'payment-processing' (size: 3307 bytes)
+2026-02-15 20:05:11.698 [INFO ] [message-queue] Email notification sent to user 86962: password_reset
+2026-02-15 20:05:11.698 [INFO ] [user-service] File uploaded: avatar.png (652KB) by user 79040
+2026-02-15 20:05:11.803 [WARN ] [scheduler] Memory usage above threshold: 87% of 4096MB heap
+2026-02-15 20:05:11.803 [TRACE] [auth-service] Serializing response payload
+2026-02-15 20:05:11.908 [ERROR] [api-gateway] Request failed: POST /api/v1/notifications/send → 500 Internal Server Error
+2026-02-15 20:05:11.908 [INFO ] [api-gateway] Payment processed: order #61741 amount=$793.55 via stripe
+2026-02-15 20:05:12.013 [INFO ] [auth-service] User 17380 authenticated successfully from 192.168.177.191
+2026-02-15 20:05:12.014 [ERROR] [db-pool] Request failed: GET /api/v1/users → 500 Internal Server Error
+java.lang.NullPointerException: Cannot invoke method on null reference
+	at com.app.service.UserService.getProfile(UserService.java:142)
+	at com.app.controller.UserController.handleGetUser(UserController.java:87)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:897)
+2026-02-15 20:05:12.014 [TRACE] [user-service] Request body size: 3191 bytes
+2026-02-15 20:05:12.069 [DEBUG] [message-queue] Cache hit for key user:74863 (ttl: 1842s remaining)
+2026-02-15 20:05:12.069 [INFO ] [user-service] Email notification sent to user 10653: password_reset
+2026-02-15 20:05:12.069 [INFO ] [user-service] Request completed: GET /api/v1/orders → 201 Created (120ms)
+2026-02-15 20:05:12.574 [INFO ] [db-pool] Batch job processed 216 records in 1200ms
+2026-02-15 20:05:12.574 [WARN ] [load-balancer] Queue depth increasing: 4629 messages pending (db-pool)
+2026-02-15 20:05:12.574 [INFO ] [load-balancer] Request completed: GET /api/v1/payments/{id} → 201 Created (1200ms)
+2026-02-15 20:05:12.679 [TRACE] [auth-service] Serializing response payload
+2026-02-15 20:05:12.679 [INFO ] [load-balancer] Batch job processed 163 records in 1200ms
+2026-02-15 20:05:13.184 [WARN ] [db-pool] Memory usage above threshold: 79% of 4096MB heap
+2026-02-15 20:05:13.184 [WARN ] [scheduler] Queue depth increasing: 3159 messages pending (scheduler)
+2026-02-15 20:05:14.187 [INFO ] [cache-manager] Payment processed: order #52201 amount=$518.84 via stripe
+2026-02-15 20:05:14.187 [DEBUG] [db-pool] Message published to queue 'analytics-events' (size: 4807 bytes)
+2026-02-15 20:05:14.292 [INFO ] [cache-manager] User 9968 authenticated successfully from 192.168.139.212
+2026-02-15 20:05:14.397 [ERROR] [payment-service] Invalid JSON in request body: unexpected token at position 80
+2026-02-15 20:05:14.397 [WARN ] [payment-service] Memory usage above threshold: 92% of 1024MB heap
+2026-02-15 20:05:14.502 [INFO ] [user-service] File uploaded: report_2024.pdf (2714KB) by user 85903
+2026-02-15 20:05:14.502 [INFO ] [payment-service] Request completed: GET /api/v1/metrics → 200 OK (67ms)
+2026-02-15 20:05:14.502 [INFO ] [db-pool] User 64248 authenticated successfully from 192.168.226.77
+2026-02-15 20:05:14.607 [DEBUG] [db-pool] Cache hit for key user:18358 (ttl: 1647s remaining)
+2026-02-15 20:05:14.607 [INFO ] [message-queue] Email notification sent to user 2047: order_confirmation
+2026-02-15 20:05:14.607 [WARN ] [payment-service] Rate limit approaching for IP 192.168.217.42: 274/100 requests
+2026-02-15 20:05:14.813 [WARN ] [cache-manager] Retry #162 for downstream call to payment-service (120ms timeout)
+2026-02-15 20:05:14.813 [INFO ] [message-queue] User 39062 authenticated successfully from 192.168.220.247
+2026-02-15 20:05:15.818 [WARN ] [scheduler] Disk space low on /var/log: 93% used (4.4GB remaining)
+2026-02-15 20:05:15.818 [INFO ] [payment-service] Health check passed: all 464 dependencies healthy
+2026-02-15 20:05:15.818 [DEBUG] [user-service] Database query executed in 3ms: SELECT * FROM users WHERE id = ?
+2026-02-15 20:05:16.822 [TRACE] [auth-service] Entering method processRequest
+2026-02-15 20:05:16.822 [INFO ] [cache-manager] Payment processed: order #85923 amount=$1250.68 via stripe
+2026-02-15 20:05:16.822 [INFO ] [message-queue] Batch job processed 8 records in 1200ms
+2026-02-15 20:05:16.877 [WARN ] [scheduler] Connection pool near capacity: 15/20 connections in use
+2026-02-15 20:05:16.931 [INFO ] [db-pool] User 2196 authenticated successfully from 192.168.226.77
+2026-02-15 20:05:16.931 [TRACE] [scheduler] Entering method processRequest
+2026-02-15 20:05:16.956 [WARN ] [load-balancer] Disk space low on /var/log: 98% used (1.9GB remaining)
+2026-02-15 20:05:17.061 [WARN ] [user-service] Retry #245 for downstream call to payment-service (23ms timeout)
+2026-02-15 20:05:17.167 [INFO ] [payment-service] Health check passed: all 155 dependencies healthy
+2026-02-15 20:05:17.167 [ERROR] [user-service] Payment processing failed: Stripe API returned 402 (insufficient_funds)
+thread 'tokio-runtime-worker' panicked at 'called `Option::unwrap()` on a `None` value'
+   0: std::panicking::begin_panic_handler
+   1: core::panicking::panic_fmt
+   2: app::handler::process_request at src/handler.rs:142
+2026-02-15 20:05:17.167 [INFO ] [api-gateway] Batch job processed 422 records in 3ms
+2026-02-15 20:05:19.170 [INFO ] [load-balancer] Batch job processed 155 records in 67ms
+2026-02-15 20:05:19.170 [INFO ] [auth-service] Scheduled job 'cleanup-expired-sessions' completed in 1ms
+2026-02-15 20:05:19.274 [WARN ] [scheduler] Retry #45 for downstream call to payment-service (1200ms timeout)
+2026-02-15 20:05:19.330 [INFO ] [db-pool] Request completed: GET /api/v1/payments/{id} → 201 Created (67ms)
+2026-02-15 20:05:19.330 [INFO ] [load-balancer] User 72975 authenticated successfully from 192.168.177.191
+2026-02-15 20:05:20.335 [WARN ] [load-balancer] Rate limit approaching for IP 192.168.205.202: 123/100 requests
+2026-02-15 20:05:20.390 [INFO ] [db-pool] User 37243 authenticated successfully from 192.168.135.122
+2026-02-15 20:05:20.390 [ERROR] [cache-manager] Timeout waiting for response from load-balancer after 1ms
+2026-02-15 20:05:20.390 [INFO ] [api-gateway] Email notification sent to user 21146: order_confirmation
+2026-02-15 20:05:20.595 [WARN ] [user-service] Connection pool near capacity: 16/20 connections in use
+2026-02-15 20:05:20.595 [INFO ] [message-queue] Email notification sent to user 52686: order_confirmation
+2026-02-15 20:05:20.700 [WARN ] [scheduler] Rate limit approaching for IP 192.168.150.247: 154/100 requests
+2026-02-15 20:05:20.805 [WARN ] [api-gateway] Memory usage above threshold: 94% of 1024MB heap
+2026-02-15 20:05:20.805 [WARN ] [api-gateway] Rate limit approaching for IP 192.168.150.247: 403/100 requests
+2026-02-15 20:05:20.805 [INFO ] [db-pool] Request completed: GET /api/v1/orders/{id} → 200 OK (5678ms)
+2026-02-15 20:05:20.911 [WARN ] [scheduler] Disk space low on /var/log: 89% used (3.6GB remaining)
+2026-02-15 20:05:21.016 [INFO ] [cache-manager] File uploaded: export.csv (4134KB) by user 34589
+2026-02-15 20:05:21.016 [INFO ] [load-balancer] Request completed: GET /api/v1/orders/{id} → 200 OK (1ms)
+2026-02-15 20:05:21.016 [DEBUG] [cache-manager] Connection acquired from pool (active: 20/20)
+2026-02-15 20:05:21.037 [DEBUG] [cache-manager] Connection acquired from pool (active: 18/20)
+2026-02-15 20:05:21.037 [INFO ] [message-queue] Request completed: POST /api/v1/auth/login → 201 Created (3ms)
+2026-02-15 20:05:23.042 [INFO ] [api-gateway] Request completed: POST /api/v1/payments → 201 Created (456ms)
+2026-02-15 20:05:23.042 [WARN ] [cache-manager] Retry #690 for downstream call to payment-service (456ms timeout)
+2026-02-15 20:05:23.148 [INFO ] [payment-service] Email notification sent to user 36755: payment_receipt
+2026-02-15 20:05:23.353 [DEBUG] [auth-service] Rate limiter: 413/100 requests in current window
+2026-02-15 20:05:23.858 [DEBUG] [payment-service] Cache miss for key session:15964
+2026-02-15 20:05:23.858 [INFO ] [cache-manager] Email notification sent to user 19963: welcome_email
+2026-02-15 20:05:23.858 [INFO ] [api-gateway] Email notification sent to user 79401: password_reset
+2026-02-15 20:05:23.909 [INFO ] [scheduler] Payment processed: order #96951 amount=$1971.32 via stripe
+2026-02-15 20:05:23.909 [INFO ] [notification-service] Payment processed: order #34761 amount=$565.28 via stripe
+2026-02-15 20:05:23.909 [INFO ] [user-service] Scheduled job 'sync-inventory' completed in 23ms
+2026-02-15 20:05:23.964 [ERROR] [notification-service] Invalid JSON in request body: unexpected token at position 206
+2026-02-15 20:05:23.964 [INFO ] [cache-manager] Request completed: GET /api/v1/payments/{id} → 200 OK (8ms)
+2026-02-15 20:05:24.065 [ERROR] [scheduler] Circuit breaker OPEN for payment-service: 319 failures in last 60s
+Traceback (most recent call last):
+  File "/app/services/user_service.py", line 89, in get_user
+    user = db.query(User).filter(User.id == user_id).one()
+sqlalchemy.exc.NoResultFound: No row was found when one was required
+2026-02-15 20:05:24.065 [WARN ] [message-queue] Queue depth increasing: 3759 messages pending (user-service)
+2026-02-15 20:05:24.065 [INFO ] [notification-service] File uploaded: report_2024.pdf (4934KB) by user 35115
+2026-02-15 20:05:24.090 [WARN ] [user-service] Retry #648 for downstream call to payment-service (67ms timeout)
+2026-02-15 20:05:24.113 [INFO ] [auth-service] User 11627 authenticated successfully from 192.168.205.202
+2026-02-15 20:05:24.113 [DEBUG] [auth-service] Rate limiter: 172/100 requests in current window
+2026-02-15 20:05:24.113 [INFO ] [auth-service] File uploaded: report_2024.pdf (1018KB) by user 91436
+2026-02-15 20:05:24.218 [INFO ] [load-balancer] Payment processed: order #75877 amount=$1733.18 via stripe
+2026-02-15 20:05:24.218 [INFO ] [payment-service] User 96565 authenticated successfully from 192.168.135.122
+2026-02-15 20:05:24.218 [INFO ] [load-balancer] Batch job processed 169 records in 3ms
+2026-02-15 20:05:24.323 [WARN ] [auth-service] Response time SLA breach: GET /api/v1/products/{id} took 8ms (target: 500ms)
+2026-02-15 20:05:24.323 [DEBUG] [cache-manager] Cache miss for key session:2022
+2026-02-15 20:05:24.378 [DEBUG] [cache-manager] Processing request 079edef for DELETE /api/v1/users/{id}
+2026-02-15 20:05:24.379 [DEBUG] [scheduler] Processing request 052daba for GET /api/v1/users/{id}
+2026-02-15 20:05:24.379 [INFO ] [scheduler] Batch job processed 138 records in 120ms
+2026-02-15 20:05:24.404 [INFO ] [payment-service] Request completed: GET /api/v1/users/{id} → 200 OK (456ms)
+2026-02-15 20:05:24.504 [INFO ] [notification-service] File uploaded: invoice_1234.pdf (3807KB) by user 1967
+2026-02-15 20:05:24.504 [WARN ] [notification-service] Queue depth increasing: 1729 messages pending (cache-manager)
+2026-02-15 20:05:24.504 [INFO ] [cache-manager] Payment processed: order #17897 amount=$2376.10 via stripe
+2026-02-15 20:05:24.609 [INFO ] [auth-service] Health check passed: all 411 dependencies healthy
+2026-02-15 20:05:24.609 [TRACE] [user-service] Entering method processRequest
+2026-02-15 20:05:24.814 [INFO ] [api-gateway] User 89950 authenticated successfully from 192.168.197.14
+2026-02-15 20:05:24.814 [INFO ] [auth-service] Payment processed: order #61178 amount=$1879.97 via stripe
+2026-02-15 20:05:24.919 [INFO ] [cache-manager] Payment processed: order #80716 amount=$29.05 via stripe
+2026-02-15 20:05:24.919 [INFO ] [cache-manager] Request completed: POST /api/v1/payments → 200 OK (8ms)
+2026-02-15 20:05:24.944 [INFO ] [scheduler] Payment processed: order #21749 amount=$274.82 via stripe
+2026-02-15 20:05:24.970 [INFO ] [api-gateway] Scheduled job 'sync-inventory' completed in 8ms
+2026-02-15 20:05:24.970 [INFO ] [message-queue] User 42003 authenticated successfully from 192.168.113.11
+2026-02-15 20:05:24.970 [INFO ] [payment-service] Payment processed: order #80140 amount=$226.76 via stripe
+2026-02-15 20:05:25.975 [DEBUG] [api-gateway] Message published to queue 'order-updates' (size: 2089 bytes)
+2026-02-15 20:05:25.975 [DEBUG] [cache-manager] Rate limiter: 141/100 requests in current window
+2026-02-15 20:05:25.975 [INFO ] [cache-manager] Order #87957 created: total=$425.35 items=9
+2026-02-15 20:05:26.080 [DEBUG] [user-service] Rate limiter: 53/100 requests in current window
+2026-02-15 20:05:26.105 [WARN ] [user-service] Connection pool near capacity: 13/20 connections in use
+2026-02-15 20:05:26.105 [WARN ] [cache-manager] Slow query detected (456ms): SELECT * FROM orders WHERE created_at > ?
+2026-02-15 20:05:26.160 [WARN ] [payment-service] Disk space low on /var/log: 83% used (3.1GB remaining)
+2026-02-15 20:05:26.160 [INFO ] [scheduler] Payment processed: order #87083 amount=$1431.29 via stripe
+2026-02-15 20:05:26.160 [INFO ] [payment-service] User 81848 authenticated successfully from 192.168.113.11
+2026-02-15 20:05:26.215 [TRACE] [db-pool] Entering method processRequest
+2026-02-15 20:05:26.215 [INFO ] [message-queue] Email notification sent to user 28073: password_reset
+2026-02-15 20:05:26.270 [WARN ] [api-gateway] Memory usage above threshold: 89% of 1024MB heap
+2026-02-15 20:05:26.270 [INFO ] [load-balancer] Payment processed: order #62551 amount=$822.95 via stripe
+2026-02-15 20:05:26.325 [INFO ] [scheduler] File uploaded: export.csv (214KB) by user 53895
+2026-02-15 20:05:26.325 [TRACE] [notification-service] Exiting method processRequest
+2026-02-15 20:05:26.325 [INFO ] [message-queue] File uploaded: export.csv (3048KB) by user 6263
+2026-02-15 20:05:26.530 [ERROR] [notification-service] Payment processing failed: Stripe API returned 402 (insufficient_funds)
+java.lang.NullPointerException: Cannot invoke method on null reference
+	at com.app.service.UserService.getProfile(UserService.java:142)
+	at com.app.controller.UserController.handleGetUser(UserController.java:87)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:897)
+2026-02-15 20:05:26.581 [INFO ] [api-gateway] Request completed: GET /api/v1/products/{id} → 201 Created (1200ms)
+2026-02-15 20:05:26.581 [DEBUG] [cache-manager] Database query executed in 120ms: SELECT * FROM users WHERE id = ?
+2026-02-15 20:05:26.786 [INFO ] [user-service] User 45322 authenticated successfully from 192.168.150.247
+2026-02-15 20:05:26.809 [WARN ] [message-queue] Response time SLA breach: PUT /api/v1/users/{id} took 456ms (target: 500ms)
+2026-02-15 20:05:27.014 [WARN ] [cache-manager] Memory usage above threshold: 76% of 4096MB heap
+2026-02-15 20:05:27.014 [INFO ] [auth-service] User 65941 authenticated successfully from 192.168.235.241
+2026-02-15 20:05:27.119 [INFO ] [notification-service] Payment processed: order #38171 amount=$2246.77 via stripe
+2026-02-15 20:05:27.119 [INFO ] [load-balancer] Order #37973 created: total=$1097.10 items=2
+2026-02-15 20:05:27.171 [WARN ] [api-gateway] Connection pool near capacity: 18/20 connections in use
+2026-02-15 20:05:27.223 [DEBUG] [payment-service] Connection acquired from pool (active: 19/20)
+2026-02-15 20:05:27.223 [INFO ] [message-queue] Request completed: GET /api/v1/payments/{id} → 200 OK (23ms)
+2026-02-15 20:05:27.223 [ERROR] [user-service] Invalid JSON in request body: unexpected token at position 318
+2026-02-15 20:05:27.274 [WARN ] [cache-manager] Disk space low on /var/log: 94% used (3.3GB remaining)
+2026-02-15 20:05:27.274 [TRACE] [auth-service] Cache key lookup: user:11669
+2026-02-15 20:05:27.274 [INFO ] [user-service] Order #13191 created: total=$755.29 items=11
+2026-02-15 20:05:27.330 [INFO ] [db-pool] Batch job processed 403 records in 23ms
+2026-02-15 20:05:27.330 [TRACE] [auth-service] Exiting method processRequest
+2026-02-15 20:05:27.330 [INFO ] [db-pool] Request completed: POST /api/v1/auth/login → 200 OK (1ms)
+2026-02-15 20:05:27.355 [DEBUG] [scheduler] Cache hit for key user:61656 (ttl: 3241s remaining)
+2026-02-15 20:05:27.460 [INFO ] [auth-service] Email notification sent to user 4216: order_confirmation
+2026-02-15 20:05:27.460 [TRACE] [payment-service] Cache key lookup: user:21981
+2026-02-15 20:05:27.564 [WARN ] [scheduler] Disk space low on /var/log: 87% used (4.8GB remaining)
+2026-02-15 20:05:27.564 [TRACE] [db-pool] Serializing response payload
+2026-02-15 20:05:27.564 [WARN ] [load-balancer] Response time SLA breach: GET /api/v1/orders took 1ms (target: 500ms)
+2026-02-15 20:05:27.669 [WARN ] [message-queue] Memory usage above threshold: 90% of 1024MB heap
+2026-02-15 20:05:27.669 [ERROR] [payment-service] Request failed: GET /api/v1/health → 500 Internal Server Error
+java.lang.NullPointerException: Cannot invoke method on null reference
+	at com.app.service.UserService.getProfile(UserService.java:142)
+	at com.app.controller.UserController.handleGetUser(UserController.java:87)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:897)
+2026-02-15 20:05:27.669 [DEBUG] [message-queue] Connection acquired from pool (active: 17/20)
+2026-02-15 20:05:27.872 [INFO ] [notification-service] Health check passed: all 463 dependencies healthy
+2026-02-15 20:05:27.873 [INFO ] [notification-service] Scheduled job 'aggregate-metrics' completed in 1ms
+2026-02-15 20:05:27.873 [WARN ] [scheduler] Connection pool near capacity: 12/20 connections in use
+2026-02-15 20:05:27.978 [WARN ] [load-balancer] Connection pool near capacity: 12/20 connections in use
+2026-02-15 20:05:27.978 [INFO ] [payment-service] User 64098 authenticated successfully from 192.168.171.221
+2026-02-15 20:05:27.978 [WARN ] [api-gateway] Response time SLA breach: POST /api/v1/payments took 67ms (target: 500ms)
+2026-02-15 20:05:28.182 [INFO ] [user-service] Batch job processed 465 records in 3ms
+2026-02-15 20:05:28.182 [ERROR] [db-pool] Payment processing failed: Stripe API returned 402 (insufficient_funds)
+2026-02-15 20:05:28.182 [INFO ] [auth-service] Request completed: GET /api/v1/metrics → 201 Created (3ms)
+2026-02-15 20:05:28.287 [INFO ] [scheduler] Order #61031 created: total=$2266.81 items=6
+2026-02-15 20:05:28.342 [INFO ] [db-pool] Payment processed: order #58369 amount=$308.06 via stripe
+2026-02-15 20:05:28.342 [INFO ] [load-balancer] Scheduled job 'cleanup-expired-sessions' completed in 120ms
+2026-02-15 20:05:28.342 [INFO ] [api-gateway] File uploaded: export.csv (2776KB) by user 74134
+2026-02-15 20:05:28.367 [ERROR] [user-service] Deadlock detected in database connection pool
+2026-02-15 20:05:28.367 [WARN ] [cache-manager] Rate limit approaching for IP 192.168.59.175: 190/100 requests
+2026-02-15 20:05:28.422 [INFO ] [payment-service] Batch job processed 161 records in 456ms
+2026-02-15 20:05:28.422 [WARN ] [scheduler] Memory usage above threshold: 98% of 4096MB heap
+2026-02-15 20:05:28.422 [INFO ] [load-balancer] Batch job processed 328 records in 8ms
+2026-02-15 20:05:28.475 [INFO ] [load-balancer] Payment processed: order #84743 amount=$1710.66 via stripe
+2026-02-15 20:05:28.530 [WARN ] [api-gateway] Response time SLA breach: PUT /api/v1/users/{id} took 8ms (target: 500ms)
+2026-02-15 20:05:28.633 [INFO ] [payment-service] Payment processed: order #39554 amount=$2014.89 via stripe
+2026-02-15 20:05:28.688 [DEBUG] [user-service] Rate limiter: 126/100 requests in current window
+2026-02-15 20:05:28.744 [INFO ] [scheduler] Email notification sent to user 41586: order_confirmation
+2026-02-15 20:05:28.846 [DEBUG] [scheduler] Connection acquired from pool (active: 13/20)
+2026-02-15 20:05:28.847 [INFO ] [cache-manager] Order #18142 created: total=$2370.63 items=6
+2026-02-15 20:05:28.847 [INFO ] [message-queue] Order #89578 created: total=$265.40 items=7
+2026-02-15 20:05:28.952 [INFO ] [notification-service] Request completed: GET /api/v1/users/{id} → 201 Created (3ms)
+2026-02-15 20:05:29.005 [WARN ] [auth-service] Response time SLA breach: GET /api/v1/orders took 5678ms (target: 500ms)
+2026-02-15 20:05:29.109 [INFO ] [cache-manager] Health check passed: all 39 dependencies healthy
+2026-02-15 20:05:29.109 [INFO ] [scheduler] File uploaded: export.csv (163KB) by user 7236
+2026-02-15 20:05:29.210 [WARN ] [load-balancer] Rate limit approaching for IP 192.168.73.23: 384/100 requests
+2026-02-15 20:05:29.415 [INFO ] [auth-service] User 53786 authenticated successfully from 192.168.14.59
+2026-02-15 20:05:29.471 [INFO ] [user-service] Batch job processed 215 records in 23ms
+2026-02-15 20:05:29.471 [INFO ] [db-pool] Request completed: GET /api/v1/orders → 200 OK (456ms)
+2026-02-15 20:05:29.576 [INFO ] [scheduler] Email notification sent to user 24773: order_confirmation
+2026-02-15 20:05:29.629 [INFO ] [payment-service] Email notification sent to user 21722: order_confirmation
+2026-02-15 20:05:29.684 [INFO ] [auth-service] Payment processed: order #74646 amount=$1264.80 via stripe
+2026-02-15 20:05:29.790 [WARN ] [user-service] Queue depth increasing: 546 messages pending (auth-service)
+2026-02-15 20:05:29.790 [DEBUG] [notification-service] Processing request 0175e4b for POST /api/v1/auth/logout
+2026-02-15 20:05:29.790 [INFO ] [load-balancer] User 21930 authenticated successfully from 192.168.226.77
+2026-02-15 20:05:29.845 [DEBUG] [message-queue] Database query executed in 23ms: SELECT * FROM users WHERE id = ?
+2026-02-15 20:05:29.865 [TRACE] [scheduler] Exiting method processRequest
+2026-02-15 20:05:29.865 [INFO ] [cache-manager] Order #65258 created: total=$2033.98 items=3
+2026-02-15 20:05:29.865 [INFO ] [load-balancer] Batch job processed 161 records in 3ms
+2026-02-15 20:05:30.070 [INFO ] [scheduler] Request completed: GET /api/v1/orders/{id} → 200 OK (23ms)
+2026-02-15 20:05:30.125 [INFO ] [message-queue] File uploaded: export.csv (487KB) by user 54974
+2026-02-15 20:05:30.125 [INFO ] [cache-manager] Request completed: GET /api/v1/orders/{id} → 201 Created (8ms)
+2026-02-15 20:05:30.125 [INFO ] [message-queue] Request completed: POST /api/v1/orders → 201 Created (120ms)
+2026-02-15 20:05:30.178 [INFO ] [load-balancer] Email notification sent to user 53362: welcome_email
+2026-02-15 20:05:30.233 [WARN ] [api-gateway] Queue depth increasing: 478 messages pending (notification-service)
+2026-02-15 20:05:30.233 [INFO ] [load-balancer] Email notification sent to user 37716: password_reset
+2026-02-15 20:05:30.234 [WARN ] [auth-service] Memory usage above threshold: 86% of 1024MB heap
+2026-02-15 20:05:30.259 [INFO ] [notification-service] Request completed: GET /api/v1/orders → 201 Created (23ms)
+2026-02-15 20:05:30.363 [TRACE] [message-queue] Serializing response payload
+2026-02-15 20:05:30.363 [INFO ] [user-service] Email notification sent to user 9886: payment_receipt
+2026-02-15 20:05:30.418 [INFO ] [notification-service] Payment processed: order #51089 amount=$393.13 via stripe
+2026-02-15 20:05:30.418 [INFO ] [scheduler] User 43504 authenticated successfully from 192.168.221.125
+2026-02-15 20:05:30.470 [INFO ] [api-gateway] Received SIGTERM, initiating graceful shutdown
+2026-02-15 20:05:30.576 [INFO ] [api-gateway] Stopping HTTP listener, draining active connections...
+2026-02-15 20:05:30.881 [INFO ] [db-pool] Connection pool drained: 20 connections closed
+2026-02-15 20:05:30.881 [INFO ] [api-gateway] Graceful shutdown completed
