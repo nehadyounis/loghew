@@ -25,7 +25,8 @@ impl LogSource {
             let mut index = LogIndex::new();
             index.timestamp_format = ts_format.clone();
 
-            let chunk = build_index_chunk(&mmap, 0, usize::MAX, &ts_format);
+            // Skip timestamps for large files — parsed incrementally after UI opens
+            let chunk = build_index_chunk(&mmap, 0, usize::MAX, &ts_format, true);
             index.merge_chunk(chunk);
 
             Ok(LogSource::Mmap { mmap, index })
@@ -35,7 +36,7 @@ impl LogSource {
             let mut index = LogIndex::new();
             index.timestamp_format = ts_format.clone();
 
-            let chunk = build_index_chunk(&content, 0, usize::MAX, &ts_format);
+            let chunk = build_index_chunk(&content, 0, usize::MAX, &ts_format, false);
             index.merge_chunk(chunk);
 
             Ok(LogSource::Buffered { content, index })
@@ -51,7 +52,7 @@ impl LogSource {
         let mut index = LogIndex::new();
         index.timestamp_format = ts_format.clone();
 
-        let chunk = build_index_chunk(&content, 0, usize::MAX, &ts_format);
+        let chunk = build_index_chunk(&content, 0, usize::MAX, &ts_format, false);
         index.merge_chunk(chunk);
 
         Ok(LogSource::Buffered { content, index })
@@ -71,7 +72,8 @@ impl LogSource {
         match self {
             LogSource::Mmap { mmap, index } => {
                 *mmap = unsafe { Mmap::map(&file)? };
-                let chunk = build_index_chunk(mmap, old_size, usize::MAX, &ts_format);
+                // Always skip timestamps in reload — batch parser handles them
+                let chunk = build_index_chunk(mmap, old_size, usize::MAX, &ts_format, true);
                 if chunk.line_offsets.is_empty() {
                     return Ok(false);
                 }
@@ -87,7 +89,7 @@ impl LogSource {
                 }
                 let base_offset = content.len() as u64;
                 content.extend_from_slice(&new_bytes);
-                let chunk = build_index_chunk(content, base_offset, usize::MAX, &ts_format);
+                let chunk = build_index_chunk(content, base_offset, usize::MAX, &ts_format, true);
                 if chunk.line_offsets.is_empty() {
                     return Ok(false);
                 }
@@ -141,5 +143,20 @@ impl LogSource {
         std::str::from_utf8(truncated)
             .ok()
             .map(|s| s.trim_end_matches(['\r', '\n']))
+    }
+
+    pub fn parse_timestamp_batch(&mut self, batch_size: usize) -> bool {
+        match self {
+            LogSource::Mmap { mmap, index } => {
+                index.parse_timestamp_batch(mmap, batch_size)
+            }
+            LogSource::Buffered { content, index } => {
+                index.parse_timestamp_batch(content, batch_size)
+            }
+        }
+    }
+
+    pub fn timestamps_ready(&self) -> bool {
+        self.index().timestamps_ready
     }
 }

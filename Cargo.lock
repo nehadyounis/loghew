@@ -814,6 +814,7 @@ dependencies = [
  "clap",
  "crossterm",
  "dirs",
+ "memchr",
  "memmap2",
  "notify-rust",
  "ratatui",

@@ -9,6 +9,9 @@ pub struct LogIndex {
     pub timestamp_format: Option<TimestampFormat>,
     pub total_lines: usize,
     pub level_counts: LevelCounts,
+    pub timestamps_ready: bool,
+    ts_parse_cursor: usize,
+    last_parsed_ts: Option<i64>,
 }
 
 pub struct IndexChunk {
@@ -28,6 +31,9 @@ impl LogIndex {
             timestamp_format: None,
             total_lines: 0,
             level_counts: LevelCounts::default(),
+            timestamps_ready: false,
+            ts_parse_cursor: 0,
+            last_parsed_ts: None,
         }
     }
 
@@ -47,6 +53,55 @@ impl LogIndex {
         self.levels.extend(chunk.levels);
         self.is_entry_start.extend(chunk.is_entry_start);
         self.total_lines = self.line_offsets.len();
+        if self.ts_parse_cursor < self.total_lines {
+            self.timestamps_ready = false;
+        }
+    }
+
+    pub fn parse_timestamp_batch(&mut self, data: &[u8], batch_size: usize) -> bool {
+        if self.timestamps_ready {
+            return false;
+        }
+        let fmt = match &self.timestamp_format {
+            Some(f) => f.clone(),
+            None => {
+                self.timestamps_ready = true;
+                return false;
+            }
+        };
+        let start = self.ts_parse_cursor;
+        let end = (start + batch_size).min(self.total_lines);
+
+        for i in start..end {
+            let line_start = self.line_offsets[i] as usize;
+            if line_start >= data.len() {
+                continue;
+            }
+            let line_end = if i + 1 < self.line_offsets.len() {
+                (self.line_offsets[i + 1] as usize).saturating_sub(1)
+            } else {
+                data.len()
+            };
+            let line_end = line_end.min(data.len());
+            let check_end = (line_start + 200).min(line_end);
+            let line_slice = &data[line_start..check_end];
+            let line_str = std::str::from_utf8(line_slice).unwrap_or_default();
+
+            if let Some(ms) = fmt.parse_epoch_ms(line_str) {
+                self.timestamps[i] = Some(ms);
+                self.is_entry_start[i] = true;
+                self.last_parsed_ts = Some(ms);
+            } else {
+                self.timestamps[i] = self.last_parsed_ts;
+                self.is_entry_start[i] = false;
+            }
+        }
+
+        self.ts_parse_cursor = end;
+        if end >= self.total_lines {
+            self.timestamps_ready = true;
+        }
+        !self.timestamps_ready
     }
 
     pub fn level_counts(&self) -> &LevelCounts {
@@ -68,54 +123,61 @@ pub fn build_index_chunk(
     start_byte: u64,
     max_lines: usize,
     ts_format: &Option<TimestampFormat>,
+    skip_timestamps: bool,
 ) -> IndexChunk {
+    let start = start_byte as usize;
     let estimated = if max_lines == usize::MAX {
-        data.len() / 80 // rough estimate: ~80 bytes per line
+        (data.len().saturating_sub(start)) / 80
     } else {
         max_lines
     };
-    let mut offsets = Vec::with_capacity(estimated.min(1_000_000));
-    let mut timestamps = Vec::with_capacity(estimated.min(1_000_000));
-    let mut levels = Vec::with_capacity(estimated.min(1_000_000));
-    let mut is_entry_start = Vec::with_capacity(estimated.min(1_000_000));
+    let cap = estimated.min(20_000_000);
 
-    let mut pos = start_byte as usize;
+    let mut offsets = Vec::with_capacity(cap);
+
+    // Phase 1: Fast line offset scanning with memchr
+    if start == 0 {
+        offsets.push(0);
+    } else if start <= data.len() && start > 0 && data[start - 1] == b'\n' {
+        offsets.push(start as u64);
+    }
+
+    let search_data = if start < data.len() { &data[start..] } else { &[] };
+    for pos in memchr::memchr_iter(b'\n', search_data) {
+        let abs_pos = start + pos;
+        if abs_pos + 1 < data.len() {
+            offsets.push((abs_pos + 1) as u64);
+        }
+        if offsets.len() >= max_lines.saturating_add(1) {
+            break;
+        }
+    }
+
+    // Phase 2: Parse levels (always) and timestamps (optionally)
+    let mut timestamps = Vec::with_capacity(offsets.len());
+    let mut levels = Vec::with_capacity(offsets.len());
+    let mut is_entry_start = Vec::with_capacity(offsets.len());
     let mut last_ts: Option<i64> = None;
 
-    if pos == 0 {
-        offsets.push(0);
-    } else if pos > 0 && pos <= data.len() && (pos == 0 || data[pos - 1] == b'\n') {
-        // New data starts right after a newline — register it as a line start
-        offsets.push(pos as u64);
-    }
-
-    while pos < data.len() && offsets.len() < max_lines.saturating_add(1) {
-        if data[pos] == b'\n' {
-            let next_line_start = (pos + 1) as u64;
-            if pos + 1 < data.len() {
-                offsets.push(next_line_start);
-            }
-        }
-        pos += 1;
-    }
-
     for (i, &offset) in offsets.iter().enumerate() {
-        let start = offset as usize;
+        let line_start = offset as usize;
         let end = if i + 1 < offsets.len() {
             (offsets[i + 1] as usize).saturating_sub(1)
         } else {
             data.len()
         };
         let end = end.min(data.len());
-        let line_end = (start + 200).min(end);
-        let line_slice = &data[start..line_end];
-
+        let line_end = (line_start + 200).min(end);
+        let line_slice = &data[line_start..line_end];
         let line_str = std::str::from_utf8(line_slice).unwrap_or_default();
 
         let level = detect_level(line_str);
         levels.push(level);
 
-        if let Some(fmt) = ts_format {
+        if skip_timestamps {
+            timestamps.push(None);
+            is_entry_start.push(true);
+        } else if let Some(fmt) = ts_format {
             if let Some(ms) = fmt.parse_epoch_ms(line_str) {
                 timestamps.push(Some(ms));
                 is_entry_start.push(true);
@@ -172,7 +234,7 @@ mod tests {
     fn test_build_chunk_basic() {
         let data = b"2024-01-15 14:32:01 INFO Starting\n2024-01-15 14:32:02 ERROR Failed\n";
         let ts_fmt = detect_timestamp_format(data);
-        let chunk = build_index_chunk(data, 0, 1000, &ts_fmt);
+        let chunk = build_index_chunk(data, 0, 1000, &ts_fmt, false);
 
         assert_eq!(chunk.line_offsets.len(), 2);
         assert_eq!(chunk.levels[0], LogLevel::Info);
@@ -183,7 +245,7 @@ mod tests {
     fn test_continuation_lines() {
         let data = b"2024-01-15 14:32:01 ERROR NullPointer\n    at com.example.Main\n    at java.lang.Thread\n2024-01-15 14:32:02 INFO Next\n";
         let ts_fmt = detect_timestamp_format(data);
-        let chunk = build_index_chunk(data, 0, 1000, &ts_fmt);
+        let chunk = build_index_chunk(data, 0, 1000, &ts_fmt, false);
 
         assert_eq!(chunk.line_offsets.len(), 4);
         assert!(chunk.is_entry_start[0]);

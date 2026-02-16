@@ -154,6 +154,8 @@ fn main() -> Result<()> {
             }
         } else if app.tick() {
             needs_redraw = true;
+        } else if !app.timestamps_ready() {
+            app.parse_timestamp_batch();
         }
         if app.should_quit {
             break;

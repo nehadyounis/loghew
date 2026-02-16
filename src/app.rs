@@ -941,6 +941,18 @@ impl App {
         }
     }
 
+    // --- Timestamp indexing ---
+
+    pub fn parse_timestamp_batch(&mut self) -> bool {
+        self.source.parse_timestamp_batch(50_000)
+    }
+
+    pub fn timestamps_ready(&self) -> bool {
+        self.source.timestamps_ready()
+    }
+
+    // --- Status ---
+
     fn set_status(&mut self, msg: impl Into<String>, is_error: bool) {
         self.status_message = Some((msg.into(), is_error));
     }

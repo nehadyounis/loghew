@@ -9,6 +9,7 @@ crossterm = "0.28"
 clap = { version = "4", features = ["derive"] }
 regex = "1"
 memmap2 = "0.9"
+memchr = "2"
 chrono = "0.4"
 unicode-width = "0.2"
 anyhow = "1"
