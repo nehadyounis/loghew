@@ -163,7 +163,14 @@ fn main() -> Result<()> {
                 needs_redraw = true;
             }
         }
-        if !had_event && app.tick() {
+        // Only run tick (reload + follow scroll) when worker has no pending work
+        if !app.worker_busy && !app.is_scanning() && !app.searching() && !app.filtering && app.indexing_ready() {
+            if !had_event && app.tick() {
+                needs_redraw = true;
+            }
+        } else if app.follow_mode && !had_event {
+            // Lightweight follow: just adjust scroll, no reload/syscalls
+            app.scroll_to_bottom();
             needs_redraw = true;
         }
         if app.should_quit {
