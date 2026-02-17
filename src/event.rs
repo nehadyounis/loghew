@@ -17,6 +17,10 @@ pub fn dispatch(app: &mut App, evt: &Event) {
     match evt {
         Event::Key(key) => handle_key(app, *key),
         Event::Mouse(mouse) => match mouse.kind {
+            MouseEventKind::ScrollUp if app.in_tail_mode() => {
+                app.exit_tail_mode();
+                app.follow_mode = false;
+            }
             MouseEventKind::ScrollUp if !app.follow_mode => app.scroll_up(app.config.scroll_speed),
             MouseEventKind::ScrollDown if !app.follow_mode => app.scroll_down(app.config.scroll_speed),
             MouseEventKind::ScrollUp | MouseEventKind::ScrollDown => {}

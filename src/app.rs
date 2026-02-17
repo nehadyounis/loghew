@@ -285,13 +285,22 @@ impl App {
 
     pub fn jump_to_bottom(&mut self) {
         if self.source.scanning() {
-            let pairs = self.source.scan_tail(self.viewport_height + 20);
-            let (lines, levels): (Vec<_>, Vec<_>) = pairs.into_iter().unzip();
-            self.tail_view = Some(TailView { lines, levels });
+            self.refresh_tail_view();
         } else {
             self.tail_view = None;
             self.scroll_to_bottom();
         }
+    }
+
+    fn refresh_tail_view(&mut self) {
+        let count = self.viewport_height + 20;
+        let pairs = if let Some(ref path) = self.file_path {
+            crate::log::read_file_tail(path, count)
+        } else {
+            self.source.scan_tail(count)
+        };
+        let (lines, levels): (Vec<_>, Vec<_>) = pairs.into_iter().unzip();
+        self.tail_view = Some(TailView { lines, levels });
     }
 
     pub fn in_tail_mode(&self) -> bool {
@@ -742,7 +751,8 @@ impl App {
                 self.follow_mode = !self.follow_mode;
                 if self.follow_mode {
                     self.jump_to_bottom();
-                    self.set_status("Follow mode ON — auto-scrolling to bottom", false);
+                    // Don't set status_message — the status bar shows FOLLOWING + SCANNING%
+                    self.status_message = None;
                 } else {
                     self.set_status("Follow mode OFF", false);
                 }
@@ -1269,11 +1279,16 @@ impl App {
                             if scanning_done && self.tail_view.is_some() {
                                 self.tail_view = None;
                                 self.scroll_to_bottom();
-                            } else if self.follow_mode && !self.in_tail_mode() {
+                            } else if self.follow_mode && self.in_tail_mode() {
+                                self.refresh_tail_view();
+                            } else if self.follow_mode {
                                 self.scroll_to_bottom();
                             }
                         }
                         _ => {}
+                    }
+                    if self.follow_mode && self.source.scanning() {
+                        self.status_message = None;
                     }
                 }
                 WorkResult::DeferredParsed { start_index, timestamps, levels, is_entry_start, level_counts_delta, last_parsed_ts } => {

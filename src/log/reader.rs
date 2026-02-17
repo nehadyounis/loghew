@@ -251,3 +251,36 @@ impl LogSource {
             .collect()
     }
 }
+
+/// Read the last count lines fresh from disk (not mmap).
+/// Catches file growth that the mmap snapshot doesn't cover.
+pub fn read_file_tail(path: &Path, count: usize) -> Vec<(String, super::parser::LogLevel)> {
+    use std::io::{Read as _, Seek, SeekFrom};
+
+    let mut file = match File::open(path) {
+        Ok(f) => f,
+        Err(_) => return Vec::new(),
+    };
+    let size = file.metadata().map(|m| m.len()).unwrap_or(0);
+    if size == 0 {
+        return Vec::new();
+    }
+
+    let buf_size: u64 = 128 * 1024;
+    let start = size.saturating_sub(buf_size);
+    let _ = file.seek(SeekFrom::Start(start));
+
+    let mut buf = Vec::with_capacity(buf_size as usize);
+    let _ = file.read_to_end(&mut buf);
+
+    let text = String::from_utf8_lossy(&buf);
+    let all_lines: Vec<&str> = text.lines().collect();
+    let start_idx = all_lines.len().saturating_sub(count);
+    all_lines[start_idx..]
+        .iter()
+        .map(|line| {
+            let level = super::parser::detect_level(line);
+            (line.to_string(), level)
+        })
+        .collect()
+}
