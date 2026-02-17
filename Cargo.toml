@@ -2,6 +2,9 @@
 name = "loghew"
 version = "0.1.0"
 edition = "2024"
+description = "A TUI log viewer"
+homepage = "https://github.com/nehadyounis/loghew"
+repository = "https://github.com/nehadyounis/loghew"
 
 [dependencies]
 ratatui = "0.29"
@@ -22,3 +25,8 @@ dirs = "6"
 lto = true
 codegen-units = 1
 strip = true
+
+# The profile that 'dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"
