@@ -68,7 +68,7 @@ pub fn draw_status(f: &mut Frame, app: &App, area: Rect) {
     }
 
 
-    if app.filter_regex.is_some() {
+    if !app.filter_conditions.is_empty() {
         spans.push(Span::styled("  ", Style::default()));
         spans.push(Span::styled(
             format!("FILTER ({})", format_number(app.filtered_lines.len())),
@@ -182,7 +182,7 @@ pub fn draw_hints(f: &mut Frame, app: &App, area: Rect) {
                     Span::styled("Esc", key_style),
                     Span::styled(" clear", text_style),
                 ]
-            } else if app.filter_regex.is_some() {
+            } else if !app.filter_conditions.is_empty() {
                 vec![
                     Span::styled(" Esc", key_style),
                     Span::styled(" clear filter", text_style),
@@ -199,7 +199,7 @@ pub fn draw_hints(f: &mut Frame, app: &App, area: Rect) {
                     Span::styled("/", key_style),
                     Span::styled(" for commands", text_style),
                     Span::styled("  ·  ", text_style),
-                    Span::styled("Esc", key_style),
+                    Span::styled("/q", key_style),
                     Span::styled(" quit", text_style),
                 ]
             }

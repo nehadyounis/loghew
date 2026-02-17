@@ -23,7 +23,7 @@ pub struct SlashCommand {
 
 pub const SLASH_COMMANDS: &[SlashCommand] = &[
     SlashCommand { name: "regex", description: "Regex search  /r error.*timeout", has_arg: true },
-    SlashCommand { name: "only-show", description: "Filter to matching lines  /only-show ERROR", has_arg: true },
+    SlashCommand { name: "filter", description: "Filter lines  /filter ERROR !debug", has_arg: true },
     SlashCommand { name: "time", description: "Jump to time  /t 14:30  /t -5m  /t +1h", has_arg: true },
     SlashCommand { name: "go", description: "Go to line or bookmark  /g 42  /g mymark", has_arg: true },
     SlashCommand { name: "bookmark", description: "Toggle bookmark  /b  or  /b name", has_arg: true },
@@ -44,6 +44,11 @@ pub const SLASH_COMMANDS: &[SlashCommand] = &[
 pub struct NotifyEntry {
     pub pattern: String,
     pub regex: Regex,
+}
+
+pub struct FilterCondition {
+    pub regex: Regex,
+    pub negated: bool,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -72,7 +77,8 @@ pub struct App {
     pub input_history: Vec<String>,
     pub history_index: Option<usize>,
     pub bookmarks: Vec<(usize, String)>,
-    pub filter_regex: Option<Regex>,
+    pub filter_conditions: Vec<FilterCondition>,
+    pub filter_highlight: Option<Regex>,
     pub filtered_lines: Vec<usize>,
     pub follow_mode: bool,
     pub show_delta: bool,
@@ -116,7 +122,8 @@ impl App {
             input_history: Vec::new(),
             history_index: None,
             bookmarks: Vec::new(),
-            filter_regex: None,
+            filter_conditions: Vec::new(),
+            filter_highlight: None,
             filtered_lines: Vec::new(),
             follow_mode: false,
             show_delta: false,
@@ -144,7 +151,7 @@ impl App {
     }
 
     pub fn visible_count(&self) -> usize {
-        if self.filter_regex.is_some() {
+        if !self.filter_conditions.is_empty() {
             self.filtered_lines.len()
         } else {
             self.total_lines()
@@ -152,7 +159,7 @@ impl App {
     }
 
     pub fn actual_line(&self, visible_idx: usize) -> usize {
-        if self.filter_regex.is_some() {
+        if !self.filter_conditions.is_empty() {
             self.filtered_lines.get(visible_idx).copied().unwrap_or(0)
         } else {
             visible_idx
@@ -579,12 +586,9 @@ impl App {
         if self.search.error.is_some() {
             return;
         }
-        let source = &self.source;
-        let total = source.index().total_lines;
-        self.search.find_matches(total, |i| source.get_line(i));
-        if let Some(line) = self.search.jump_to_nearest(self.scroll_offset) {
-            self.scroll_to(line);
-        }
+        let total = self.source.index().total_lines;
+        self.search.start_search(total);
+        self.set_status("Searching...", false);
     }
 
     fn execute_regex_search(&mut self, pattern: &str) {
@@ -592,12 +596,39 @@ impl App {
         if self.search.error.is_some() {
             return;
         }
+        let total = self.source.index().total_lines;
+        self.search.start_search(total);
+        self.set_status("Searching...", false);
+    }
+
+    pub fn searching(&self) -> bool {
+        self.search.searching
+    }
+
+    pub fn search_tick(&mut self) -> bool {
         let source = &self.source;
-        let total = source.index().total_lines;
-        self.search.find_matches(total, |i| source.get_line(i));
-        if let Some(line) = self.search.jump_to_nearest(self.scroll_offset) {
-            self.scroll_to(line);
+        let still_going = self.search.search_batch(10_000, |i| source.get_line(i));
+        if still_going {
+            let pct = if self.search.search_total > 0 {
+                self.search.search_cursor * 100 / self.search.search_total
+            } else {
+                100
+            };
+            self.status_message = Some((
+                format!("Searching... {}%  ({} matches)", pct, self.search.matches.len()),
+                false,
+            ));
+        } else {
+            let count = self.search.match_count();
+            self.status_message = Some((
+                format!("{} matches for \"{}\"", count, self.search.pattern),
+                false,
+            ));
+            if let Some(line) = self.search.jump_to_nearest(self.scroll_offset) {
+                self.scroll_to(line);
+            }
         }
+        still_going
     }
 
     fn execute_command(&mut self, input: &str) {
@@ -641,7 +672,7 @@ impl App {
                     self.set_status("Time deltas OFF", false);
                 }
             }
-            "only-show" => {
+            "filter" | "only-show" => {
                 if arg.is_empty() {
                     self.clear_filter();
                 } else {
@@ -714,34 +745,71 @@ impl App {
     }
 
     fn apply_filter(&mut self, pattern: &str) {
-        let escaped = format!("(?i){}", regex::escape(pattern));
-        match Regex::new(&escaped) {
-            Ok(re) => {
-                self.filtered_lines.clear();
-                for i in 0..self.total_lines() {
-                    if let Some(line) = self.source.get_line(i) {
-                        if re.is_match(line) {
-                            self.filtered_lines.push(i);
-                        }
-                    }
-                }
-                let count = self.filtered_lines.len();
-                self.filter_regex = Some(re);
-                self.scroll_offset = 0;
-                self.set_status(
-                    format!("Showing {} lines matching \"{}\"", count, pattern),
-                    false,
-                );
+        let words: Vec<&str> = pattern.split_whitespace().collect();
+        let mut conditions = Vec::new();
+        let mut positive_terms = Vec::new();
+
+        for word in &words {
+            let (negated, term) = if let Some(rest) = word.strip_prefix('!') {
+                (true, rest)
+            } else {
+                (false, *word)
+            };
+            if term.is_empty() {
+                continue;
             }
-            Err(e) => {
-                self.set_status(format!("Invalid pattern: {}", e), true);
+            let pat = format!("(?i){}", regex::escape(term));
+            match Regex::new(&pat) {
+                Ok(re) => {
+                    if !negated {
+                        positive_terms.push(regex::escape(term));
+                    }
+                    conditions.push(FilterCondition { regex: re, negated });
+                }
+                Err(e) => {
+                    self.set_status(format!("Invalid pattern: {}", e), true);
+                    return;
+                }
             }
         }
+
+        if conditions.is_empty() {
+            self.clear_filter();
+            return;
+        }
+
+        let highlight = if positive_terms.is_empty() {
+            None
+        } else {
+            Regex::new(&format!("(?i){}", positive_terms.join("|"))).ok()
+        };
+
+        self.filtered_lines.clear();
+        for i in 0..self.total_lines() {
+            if let Some(line) = self.source.get_line(i) {
+                let matches = conditions.iter().all(|c| {
+                    let found = c.regex.is_match(line);
+                    if c.negated { !found } else { found }
+                });
+                if matches {
+                    self.filtered_lines.push(i);
+                }
+            }
+        }
+        let count = self.filtered_lines.len();
+        self.filter_conditions = conditions;
+        self.filter_highlight = highlight;
+        self.scroll_offset = 0;
+        self.set_status(
+            format!("Showing {} lines matching \"{}\"", count, pattern),
+            false,
+        );
     }
 
     fn clear_filter(&mut self) {
-        if self.filter_regex.is_some() {
-            self.filter_regex = None;
+        if !self.filter_conditions.is_empty() {
+            self.filter_conditions.clear();
+            self.filter_highlight = None;
             self.filtered_lines.clear();
             self.scroll_offset = 0;
             self.set_status("Filter cleared", false);
@@ -1018,14 +1086,14 @@ impl App {
         }
     }
 
-    // --- Timestamp indexing ---
+    // --- Deferred indexing ---
 
-    pub fn parse_timestamp_batch(&mut self) -> bool {
-        self.source.parse_timestamp_batch(50_000)
+    pub fn parse_deferred_batch(&mut self) -> bool {
+        self.source.parse_deferred_batch(10_000)
     }
 
-    pub fn timestamps_ready(&self) -> bool {
-        self.source.timestamps_ready()
+    pub fn indexing_ready(&self) -> bool {
+        self.source.indexing_ready()
     }
 
     // --- Status ---
@@ -1049,7 +1117,7 @@ impl App {
         } else if self.search.regex.is_some() {
             self.search.regex.as_ref()
         } else {
-            self.filter_regex.as_ref()
+            self.filter_highlight.as_ref()
         }
     }
 

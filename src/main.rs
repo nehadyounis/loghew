@@ -152,10 +152,14 @@ fn main() -> Result<()> {
                     break;
                 }
             }
+        } else if app.searching() {
+            app.search_tick();
+            needs_redraw = true;
         } else if app.tick() {
             needs_redraw = true;
-        } else if !app.timestamps_ready() {
-            app.parse_timestamp_batch();
+        } else if !app.indexing_ready() {
+            app.parse_deferred_batch();
+            needs_redraw = true;
         }
         if app.should_quit {
             break;

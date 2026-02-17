@@ -10,6 +10,7 @@ pub struct LogIndex {
     pub total_lines: usize,
     pub level_counts: LevelCounts,
     pub timestamps_ready: bool,
+    pub levels_ready: bool,
     ts_parse_cursor: usize,
     last_parsed_ts: Option<i64>,
 }
@@ -32,6 +33,7 @@ impl LogIndex {
             total_lines: 0,
             level_counts: LevelCounts::default(),
             timestamps_ready: false,
+            levels_ready: false,
             ts_parse_cursor: 0,
             last_parsed_ts: None,
         }
@@ -55,20 +57,15 @@ impl LogIndex {
         self.total_lines = self.line_offsets.len();
         if self.ts_parse_cursor < self.total_lines {
             self.timestamps_ready = false;
+            self.levels_ready = false;
         }
     }
 
-    pub fn parse_timestamp_batch(&mut self, data: &[u8], batch_size: usize) -> bool {
-        if self.timestamps_ready {
+    pub fn parse_deferred_batch(&mut self, data: &[u8], batch_size: usize) -> bool {
+        if self.timestamps_ready && self.levels_ready {
             return false;
         }
-        let fmt = match &self.timestamp_format {
-            Some(f) => f.clone(),
-            None => {
-                self.timestamps_ready = true;
-                return false;
-            }
-        };
+        let fmt = self.timestamp_format.clone();
         let start = self.ts_parse_cursor;
         let end = (start + batch_size).min(self.total_lines);
 
@@ -87,21 +84,39 @@ impl LogIndex {
             let line_slice = &data[line_start..check_end];
             let line_str = std::str::from_utf8(line_slice).unwrap_or_default();
 
-            if let Some(ms) = fmt.parse_epoch_ms(line_str) {
-                self.timestamps[i] = Some(ms);
-                self.is_entry_start[i] = true;
-                self.last_parsed_ts = Some(ms);
-            } else {
-                self.timestamps[i] = self.last_parsed_ts;
-                self.is_entry_start[i] = false;
+            if self.levels[i] == LogLevel::Unknown {
+                let level = detect_level(line_str);
+                if level != LogLevel::Unknown {
+                    self.levels[i] = level;
+                    match level {
+                        LogLevel::Error => self.level_counts.error += 1,
+                        LogLevel::Warn => self.level_counts.warn += 1,
+                        LogLevel::Info => self.level_counts.info += 1,
+                        LogLevel::Debug => self.level_counts.debug += 1,
+                        LogLevel::Trace => self.level_counts.trace += 1,
+                        LogLevel::Unknown => {}
+                    }
+                }
+            }
+
+            if let Some(ref fmt) = fmt {
+                if let Some(ms) = fmt.parse_epoch_ms(line_str) {
+                    self.timestamps[i] = Some(ms);
+                    self.is_entry_start[i] = true;
+                    self.last_parsed_ts = Some(ms);
+                } else {
+                    self.timestamps[i] = self.last_parsed_ts;
+                    self.is_entry_start[i] = false;
+                }
             }
         }
 
         self.ts_parse_cursor = end;
         if end >= self.total_lines {
             self.timestamps_ready = true;
+            self.levels_ready = true;
         }
-        !self.timestamps_ready
+        !(self.timestamps_ready && self.levels_ready)
     }
 
     pub fn level_counts(&self) -> &LevelCounts {
@@ -171,7 +186,11 @@ pub fn build_index_chunk(
         let line_slice = &data[line_start..line_end];
         let line_str = std::str::from_utf8(line_slice).unwrap_or_default();
 
-        let level = detect_level(line_str);
+        let level = if skip_timestamps {
+            LogLevel::Unknown
+        } else {
+            detect_level(line_str)
+        };
         levels.push(level);
 
         if skip_timestamps {

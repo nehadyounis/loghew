@@ -7,6 +7,9 @@ pub struct SearchState {
     pub error: Option<String>,
     pub matches: Vec<usize>,
     pub current_match: Option<usize>,
+    pub search_cursor: usize,
+    pub search_total: usize,
+    pub searching: bool,
 }
 
 impl SearchState {
@@ -17,6 +20,9 @@ impl SearchState {
             error: None,
             matches: Vec::new(),
             current_match: None,
+            search_cursor: 0,
+            search_total: 0,
+            searching: false,
         }
     }
 
@@ -80,6 +86,41 @@ impl SearchState {
                 }
             }
         }
+    }
+
+    pub fn start_search(&mut self, total_lines: usize) {
+        self.matches.clear();
+        self.current_match = None;
+        self.search_cursor = 0;
+        self.search_total = total_lines;
+        self.searching = true;
+    }
+
+    pub fn search_batch<'a, F>(&mut self, batch_size: usize, get_line: F) -> bool
+    where
+        F: Fn(usize) -> Option<&'a str>,
+    {
+        let re = match &self.regex {
+            Some(r) => r.clone(),
+            None => {
+                self.searching = false;
+                return false;
+            }
+        };
+
+        let end = (self.search_cursor + batch_size).min(self.search_total);
+        for i in self.search_cursor..end {
+            if let Some(line) = get_line(i) {
+                if re.is_match(line) {
+                    self.matches.push(i);
+                }
+            }
+        }
+        self.search_cursor = end;
+        if end >= self.search_total {
+            self.searching = false;
+        }
+        self.searching
     }
 
     /// Set current_match to the first match at or after `from_line`.

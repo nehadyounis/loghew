@@ -170,15 +170,14 @@ fn handle_idle_key(app: &mut App, key: KeyEvent) {
                 app.clear_selection();
             } else if app.has_active_search() {
                 app.search = crate::search::SearchState::new();
-            } else if app.filter_regex.is_some() {
-                app.filter_regex = None;
+            } else if !app.filter_conditions.is_empty() {
+                app.filter_conditions.clear();
+                app.filter_highlight = None;
                 app.filtered_lines.clear();
                 app.scroll_offset = 0;
             } else if app.follow_mode {
                 app.follow_mode = false;
                 app.status_message = Some(("Follow mode OFF".to_string(), false));
-            } else {
-                app.should_quit = true;
             }
         }
 

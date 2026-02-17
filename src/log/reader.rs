@@ -145,18 +145,19 @@ impl LogSource {
             .map(|s| s.trim_end_matches(['\r', '\n']))
     }
 
-    pub fn parse_timestamp_batch(&mut self, batch_size: usize) -> bool {
+    pub fn parse_deferred_batch(&mut self, batch_size: usize) -> bool {
         match self {
             LogSource::Mmap { mmap, index } => {
-                index.parse_timestamp_batch(mmap, batch_size)
+                index.parse_deferred_batch(mmap, batch_size)
             }
             LogSource::Buffered { content, index } => {
-                index.parse_timestamp_batch(content, batch_size)
+                index.parse_deferred_batch(content, batch_size)
             }
         }
     }
 
-    pub fn timestamps_ready(&self) -> bool {
-        self.index().timestamps_ready
+    pub fn indexing_ready(&self) -> bool {
+        let idx = self.index();
+        idx.timestamps_ready && idx.levels_ready
     }
 }

@@ -547,12 +547,12 @@ fn tokenize_semantic<'a>(line: &'a str, app: &App) -> Vec<Span<'a>> {
                     i += 1;
                 }
             }
-            b'"' => {
-                // Look for closing quote
-                if let Some(close) = line[i + 1..].find('"') {
+            b'"' | b'\'' => {
+                let quote = bytes[i];
+                let closer = if quote == b'"' { '"' } else { '\'' };
+                if let Some(close) = line[i + 1..].find(closer) {
                     let end = i + 1 + close + 1;
                     let content = &line[i..end];
-                    // Check for "key": pattern
                     let style = if end < line.len() && bytes.get(end) == Some(&b':') {
                         Style::default().fg(colors::SEMANTIC_KEY)
                     } else if content.contains(':') && content.len() < 40 {
