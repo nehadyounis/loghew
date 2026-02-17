@@ -4,6 +4,7 @@ mod event;
 mod log;
 mod search;
 mod ui;
+mod worker;
 
 use std::io;
 use std::io::IsTerminal;
@@ -152,28 +153,21 @@ fn main() -> Result<()> {
                     break;
                 }
             }
-        } else if app.searching() {
-            app.search_tick();
+        }
+        if app.poll_worker() {
             needs_redraw = true;
-        } else if app.filtering() {
-            app.filter_tick();
-            needs_redraw = true;
-        } else if app.is_scanning() {
-            app.scan_tick();
-            if !app.is_scanning() && app.tail_view.is_some() {
-                app.tail_view = None;
-                app.scroll_to_bottom();
-            } else if app.follow_mode && !app.in_tail_mode() {
-                app.scroll_to_bottom();
+        }
+        if !app.worker_busy {
+            app.submit_next_work();
+            if app.worker_busy {
+                needs_redraw = true;
             }
-            needs_redraw = true;
-        } else if app.tick() {
-            needs_redraw = true;
-        } else if !app.indexing_ready() {
-            app.parse_deferred_batch();
+        }
+        if !had_event && app.tick() {
             needs_redraw = true;
         }
         if app.should_quit {
+            app.shutdown_worker();
             break;
         }
     }

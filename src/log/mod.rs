@@ -1,6 +1,7 @@
-mod index;
+pub(crate) mod index;
 mod parser;
 mod reader;
 
-pub use parser::{LogLevel, LEVEL_REGEX};
+pub use index::{IndexChunk, LevelCounts};
+pub use parser::{detect_level, LogLevel, TimestampFormat, LEVEL_REGEX};
 pub use reader::LogSource;

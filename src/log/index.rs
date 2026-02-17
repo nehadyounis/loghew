@@ -122,6 +122,56 @@ impl LogIndex {
     pub fn level_counts(&self) -> &LevelCounts {
         &self.level_counts
     }
+
+    pub fn parse_cursor(&self) -> usize {
+        self.ts_parse_cursor
+    }
+
+    pub fn last_parsed_ts(&self) -> Option<i64> {
+        self.last_parsed_ts
+    }
+
+    pub fn set_parse_cursor(&mut self, cursor: usize, last_ts: Option<i64>) {
+        self.ts_parse_cursor = cursor;
+        self.last_parsed_ts = last_ts;
+        if cursor >= self.total_lines {
+            self.timestamps_ready = true;
+            self.levels_ready = true;
+        }
+    }
+
+    pub fn apply_deferred_batch(
+        &mut self,
+        start: usize,
+        timestamps: Vec<Option<i64>>,
+        levels: Vec<LogLevel>,
+        is_entry_start: Vec<bool>,
+        counts_delta: LevelCounts,
+    ) {
+        for (i, ts) in timestamps.into_iter().enumerate() {
+            let idx = start + i;
+            if idx < self.timestamps.len() {
+                self.timestamps[idx] = ts;
+            }
+        }
+        for (i, level) in levels.into_iter().enumerate() {
+            let idx = start + i;
+            if idx < self.levels.len() && self.levels[idx] == LogLevel::Unknown && level != LogLevel::Unknown {
+                self.levels[idx] = level;
+            }
+        }
+        for (i, is_start) in is_entry_start.into_iter().enumerate() {
+            let idx = start + i;
+            if idx < self.is_entry_start.len() {
+                self.is_entry_start[idx] = is_start;
+            }
+        }
+        self.level_counts.error += counts_delta.error;
+        self.level_counts.warn += counts_delta.warn;
+        self.level_counts.info += counts_delta.info;
+        self.level_counts.debug += counts_delta.debug;
+        self.level_counts.trace += counts_delta.trace;
+    }
 }
 
 #[derive(Default, Debug, Clone)]

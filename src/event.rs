@@ -1,3 +1,5 @@
+use std::sync::atomic::Ordering;
+
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyModifiers, MouseButton, MouseEventKind};
 
 use crate::app::{App, InputMode};
@@ -171,8 +173,14 @@ fn handle_idle_key(app: &mut App, key: KeyEvent) {
             } else if app.text_selection.is_some() || !app.selected_lines.is_empty() {
                 app.clear_selection();
             } else if app.has_active_search() {
+                if let Some(cancel) = &app.search_cancel {
+                    cancel.store(true, Ordering::Relaxed);
+                }
                 app.search = crate::search::SearchState::new();
             } else if !app.filter_conditions.is_empty() || app.filtering {
+                if let Some(cancel) = &app.filter_cancel {
+                    cancel.store(true, Ordering::Relaxed);
+                }
                 app.filter_conditions.clear();
                 app.filter_highlight = None;
                 app.filtered_lines.clear();

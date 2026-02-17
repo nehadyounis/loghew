@@ -1,5 +1,9 @@
 use std::collections::BTreeSet;
 use std::path::PathBuf;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::mpsc::{self, Receiver, Sender};
+use std::sync::Arc;
+use std::thread::JoinHandle;
 use std::time::Instant;
 
 use regex::Regex;
@@ -7,6 +11,7 @@ use regex::Regex;
 use crate::config::{self, Config};
 use crate::log::{LogLevel, LogSource};
 use crate::search::SearchState;
+use crate::worker::{self, Generation, WorkRequest, WorkResult};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum InputMode {
@@ -107,10 +112,31 @@ pub struct App {
     pub last_click: Option<(Instant, u16)>,
     pub semantic_color: bool,
     pub tail_view: Option<TailView>,
+
+    worker_tx: Option<Sender<WorkRequest>>,
+    worker_rx: Option<Receiver<WorkResult>>,
+    worker_handle: Option<JoinHandle<()>>,
+    pub worker_busy: bool,
+
+    search_generation: Generation,
+    pub search_cancel: Option<Arc<AtomicBool>>,
+    filter_generation: Generation,
+    pub filter_cancel: Option<Arc<AtomicBool>>,
+
+    shared_offsets: Option<Arc<Vec<u64>>>,
 }
 
 impl App {
     pub fn new(source: LogSource, filename: String, file_path: Option<PathBuf>, config: Config) -> Self {
+        let (worker_tx, worker_rx, worker_handle) = if source.is_mmap() {
+            let (req_tx, req_rx) = mpsc::channel();
+            let (res_tx, res_rx) = mpsc::channel();
+            let handle = std::thread::spawn(move || worker::worker_loop(req_rx, res_tx));
+            (Some(req_tx), Some(res_rx), Some(handle))
+        } else {
+            (None, None, None)
+        };
+
         Self {
             source,
             filename,
@@ -156,6 +182,15 @@ impl App {
             wrap_char_offsets: Vec::new(),
             last_click: None,
             tail_view: None,
+            worker_tx,
+            worker_rx,
+            worker_handle,
+            worker_busy: false,
+            search_generation: 0,
+            search_cancel: None,
+            filter_generation: 0,
+            filter_cancel: None,
+            shared_offsets: None,
         }
     }
 
@@ -592,6 +627,9 @@ impl App {
         self.suggestion_index = None;
         self.history_index = None;
         self.live_regex = None;
+        if let Some(cancel) = &self.search_cancel {
+            cancel.store(true, Ordering::Relaxed);
+        }
         self.search = crate::search::SearchState::new();
     }
 
@@ -623,8 +661,16 @@ impl App {
         if self.search.error.is_some() {
             return;
         }
+        if let Some(cancel) = &self.search_cancel {
+            cancel.store(true, Ordering::Relaxed);
+        }
+        self.search_generation += 1;
         let total = self.source.index().total_lines;
         self.search.start_search(total);
+        if self.worker_tx.is_some() {
+            self.snapshot_offsets();
+            self.search_cancel = Some(Arc::new(AtomicBool::new(false)));
+        }
         self.set_status("Searching...", false);
     }
 
@@ -633,8 +679,16 @@ impl App {
         if self.search.error.is_some() {
             return;
         }
+        if let Some(cancel) = &self.search_cancel {
+            cancel.store(true, Ordering::Relaxed);
+        }
+        self.search_generation += 1;
         let total = self.source.index().total_lines;
         self.search.start_search(total);
+        if self.worker_tx.is_some() {
+            self.snapshot_offsets();
+            self.search_cancel = Some(Arc::new(AtomicBool::new(false)));
+        }
         self.set_status("Searching...", false);
     }
 
@@ -821,6 +875,10 @@ impl App {
             Regex::new(&format!("(?i){}", positive_terms.join("|"))).ok()
         };
 
+        if let Some(cancel) = &self.filter_cancel {
+            cancel.store(true, Ordering::Relaxed);
+        }
+        self.filter_generation += 1;
         self.filtered_lines.clear();
         self.filter_conditions = conditions;
         self.filter_highlight = highlight;
@@ -828,11 +886,11 @@ impl App {
         self.filter_total = self.total_lines();
         self.filtering = true;
         self.scroll_offset = 0;
+        if self.worker_tx.is_some() {
+            self.snapshot_offsets();
+            self.filter_cancel = Some(Arc::new(AtomicBool::new(false)));
+        }
         self.set_status("Filtering...", false);
-    }
-
-    pub fn filtering(&self) -> bool {
-        self.filtering
     }
 
     pub fn filter_tick(&mut self) -> bool {
@@ -871,6 +929,9 @@ impl App {
 
     fn clear_filter(&mut self) {
         if !self.filter_conditions.is_empty() || self.filtering {
+            if let Some(cancel) = &self.filter_cancel {
+                cancel.store(true, Ordering::Relaxed);
+            }
             self.filter_conditions.clear();
             self.filter_highlight = None;
             self.filtered_lines.clear();
@@ -1166,6 +1227,235 @@ impl App {
 
     pub fn indexing_ready(&self) -> bool {
         self.source.indexing_ready()
+    }
+
+    // --- Worker thread ---
+
+    fn snapshot_offsets(&mut self) {
+        let offsets = self.source.index().line_offsets.clone();
+        self.shared_offsets = Some(Arc::new(offsets));
+    }
+
+    pub fn poll_worker(&mut self) -> bool {
+        if self.worker_rx.is_none() {
+            return false;
+        }
+
+        let mut results = Vec::new();
+        if let Some(rx) = &self.worker_rx {
+            while let Ok(result) = rx.try_recv() {
+                results.push(result);
+            }
+        }
+
+        if results.is_empty() {
+            return false;
+        }
+
+        for result in results {
+            self.worker_busy = false;
+            match result {
+                WorkResult::ScanChunk { chunk, next_offset } => {
+                    let is_empty = chunk.line_offsets.is_empty();
+                    match &mut self.source {
+                        LogSource::Mmap { index, scan_offset, scan_limit, .. } => {
+                            if is_empty {
+                                *scan_offset = *scan_limit;
+                            } else {
+                                index.merge_chunk(chunk);
+                                *scan_offset = next_offset;
+                            }
+                            let scanning_done = *scan_offset >= *scan_limit;
+                            if scanning_done && self.tail_view.is_some() {
+                                self.tail_view = None;
+                                self.scroll_to_bottom();
+                            } else if self.follow_mode && !self.in_tail_mode() {
+                                self.scroll_to_bottom();
+                            }
+                        }
+                        _ => {}
+                    }
+                }
+                WorkResult::DeferredParsed { start_index, timestamps, levels, is_entry_start, level_counts_delta, last_parsed_ts } => {
+                    let batch_len = timestamps.len();
+                    self.source.index_mut().apply_deferred_batch(
+                        start_index, timestamps, levels, is_entry_start, level_counts_delta,
+                    );
+                    let new_cursor = start_index + batch_len;
+                    self.source.index_mut().set_parse_cursor(new_cursor, last_parsed_ts);
+                }
+                WorkResult::SearchBatch { matches, cursor, done, generation } => {
+                    if generation != self.search_generation {
+                        continue;
+                    }
+                    self.search.matches.extend(matches);
+                    self.search.search_cursor = cursor;
+                    if done {
+                        self.search.searching = false;
+                        let count = self.search.match_count();
+                        self.status_message = Some((
+                            format!("{} matches for \"{}\"", count, self.search.pattern),
+                            false,
+                        ));
+                        if let Some(line) = self.search.jump_to_nearest(self.scroll_offset) {
+                            self.scroll_to(line);
+                        }
+                    } else {
+                        let pct = if self.search.search_total > 0 {
+                            self.search.search_cursor * 100 / self.search.search_total
+                        } else {
+                            100
+                        };
+                        self.status_message = Some((
+                            format!("Searching... {}%  ({} matches)", pct, self.search.matches.len()),
+                            false,
+                        ));
+                    }
+                }
+                WorkResult::FilterBatch { matches, cursor, done, generation } => {
+                    if generation != self.filter_generation {
+                        continue;
+                    }
+                    self.filtered_lines.extend(matches);
+                    self.filter_cursor = cursor;
+                    if done {
+                        self.filtering = false;
+                        let count = self.filtered_lines.len();
+                        self.status_message = Some((
+                            format!("Showing {} filtered lines", count),
+                            false,
+                        ));
+                    } else {
+                        let pct = self.filter_cursor * 100 / self.filter_total;
+                        self.status_message = Some((
+                            format!("Filtering... {}%  ({} matches)", pct, self.filtered_lines.len()),
+                            false,
+                        ));
+                    }
+                }
+            }
+        }
+        true
+    }
+
+    pub fn submit_next_work(&mut self) {
+        let tx = match &self.worker_tx {
+            Some(tx) => tx,
+            None => {
+                self.submit_sync_work();
+                return;
+            }
+        };
+
+        let mmap = match self.source.mmap_arc() {
+            Some(m) => m,
+            None => return,
+        };
+
+        // Priority: searching > filtering > scanning > deferred_parse
+        if self.searching() {
+            let re = match &self.search.regex {
+                Some(r) => r.clone(),
+                None => return,
+            };
+            let offsets = match &self.shared_offsets {
+                Some(o) => Arc::clone(o),
+                None => return,
+            };
+            let cancel = self.search_cancel.clone().unwrap_or_else(|| Arc::new(AtomicBool::new(false)));
+            let data_len = mmap.len();
+            let _ = tx.send(WorkRequest::SearchBatch {
+                mmap,
+                regex: re,
+                line_offsets: offsets,
+                data_len,
+                start_line: self.search.search_cursor,
+                batch_size: 50_000,
+                generation: self.search_generation,
+                cancel,
+            });
+            self.worker_busy = true;
+        } else if self.filtering {
+            let conditions: Vec<(Regex, bool)> = self.filter_conditions.iter()
+                .map(|c| (c.regex.clone(), c.negated))
+                .collect();
+            let offsets = match &self.shared_offsets {
+                Some(o) => Arc::clone(o),
+                None => return,
+            };
+            let cancel = self.filter_cancel.clone().unwrap_or_else(|| Arc::new(AtomicBool::new(false)));
+            let data_len = mmap.len();
+            let _ = tx.send(WorkRequest::FilterBatch {
+                mmap,
+                conditions,
+                line_offsets: offsets,
+                data_len,
+                start_line: self.filter_cursor,
+                batch_size: 50_000,
+                generation: self.filter_generation,
+                cancel,
+            });
+            self.worker_busy = true;
+        } else if self.is_scanning() {
+            if let LogSource::Mmap { scan_offset, scan_limit, index, .. } = &self.source {
+                let ts_format = index.timestamp_format.clone();
+                let _ = tx.send(WorkRequest::ScanBatch {
+                    mmap,
+                    start_byte: *scan_offset,
+                    scan_limit: *scan_limit,
+                    ts_format,
+                    max_lines: 50_000,
+                });
+                self.worker_busy = true;
+            }
+        } else if !self.indexing_ready() {
+            let index = self.source.index();
+            let cursor = index.parse_cursor();
+            let total = index.total_lines;
+            let batch_size = 10_000.min(total.saturating_sub(cursor));
+            if batch_size == 0 {
+                return;
+            }
+            let offsets: Vec<u64> = index.line_offsets[cursor..cursor + batch_size].to_vec();
+            let ts_format = index.timestamp_format.clone();
+            let last_ts = index.last_parsed_ts();
+            let _ = tx.send(WorkRequest::DeferredParseBatch {
+                mmap,
+                offsets,
+                start_index: cursor,
+                ts_format,
+                last_ts,
+            });
+            self.worker_busy = true;
+        }
+    }
+
+    fn submit_sync_work(&mut self) {
+        if self.searching() {
+            self.search_tick();
+        } else if self.filtering {
+            self.filter_tick();
+        } else if self.is_scanning() {
+            self.scan_tick();
+            if !self.is_scanning() && self.tail_view.is_some() {
+                self.tail_view = None;
+                self.scroll_to_bottom();
+            } else if self.follow_mode && !self.in_tail_mode() {
+                self.scroll_to_bottom();
+            }
+        } else if !self.indexing_ready() {
+            self.parse_deferred_batch();
+        }
+    }
+
+    pub fn shutdown_worker(&mut self) {
+        if let Some(tx) = self.worker_tx.take() {
+            let _ = tx.send(WorkRequest::Quit);
+        }
+        if let Some(handle) = self.worker_handle.take() {
+            let _ = handle.join();
+        }
+        self.worker_rx = None;
     }
 
     // --- Status ---

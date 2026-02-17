@@ -3,13 +3,14 @@ use memmap2::Mmap;
 use std::fs::File;
 use std::io::{Read, Seek, SeekFrom};
 use std::path::Path;
+use std::sync::Arc;
 
 use super::index::{build_index_chunk, detect_timestamp_format, LogIndex};
 
 const MMAP_THRESHOLD: u64 = 10 * 1024 * 1024; // 10MB
 
 pub enum LogSource {
-    Mmap { mmap: Mmap, index: LogIndex, scan_offset: u64, scan_limit: u64 },
+    Mmap { mmap: Arc<Mmap>, index: LogIndex, scan_offset: u64, scan_limit: u64 },
     Buffered { content: Vec<u8>, index: LogIndex },
 }
 
@@ -20,12 +21,11 @@ impl LogSource {
         let size = metadata.len();
 
         if size > MMAP_THRESHOLD {
-            let mmap = unsafe { Mmap::map(&file)? };
+            let mmap = Arc::new(unsafe { Mmap::map(&file)? });
             let ts_format = detect_timestamp_format(&mmap);
             let mut index = LogIndex::new();
             index.timestamp_format = ts_format.clone();
 
-            // Scan first 50K lines — rest continues incrementally in background
             let chunk = build_index_chunk(&mmap, 0, 50_000, &ts_format, true);
             let scan_offset = chunk.line_offsets.last().map(|&x| x + 1).unwrap_or(size);
             index.merge_chunk(chunk);
@@ -72,8 +72,7 @@ impl LogSource {
 
         match self {
             LogSource::Mmap { mmap, index, .. } => {
-                *mmap = unsafe { Mmap::map(&file)? };
-                // Always skip timestamps in reload — batch parser handles them
+                *mmap = Arc::new(unsafe { Mmap::map(&file)? });
                 let chunk = build_index_chunk(mmap, old_size, usize::MAX, &ts_format, true);
                 if chunk.line_offsets.is_empty() {
                     return Ok(false);
@@ -101,6 +100,17 @@ impl LogSource {
         Ok(true)
     }
 
+    pub fn mmap_arc(&self) -> Option<Arc<Mmap>> {
+        match self {
+            LogSource::Mmap { mmap, .. } => Some(Arc::clone(mmap)),
+            LogSource::Buffered { .. } => None,
+        }
+    }
+
+    pub fn is_mmap(&self) -> bool {
+        matches!(self, LogSource::Mmap { .. })
+    }
+
     pub fn data(&self) -> &[u8] {
         match self {
             LogSource::Mmap { mmap, .. } => mmap,
@@ -109,6 +119,13 @@ impl LogSource {
     }
 
     pub fn index(&self) -> &LogIndex {
+        match self {
+            LogSource::Mmap { index, .. } => index,
+            LogSource::Buffered { index, .. } => index,
+        }
+    }
+
+    pub fn index_mut(&mut self) -> &mut LogIndex {
         match self {
             LogSource::Mmap { index, .. } => index,
             LogSource::Buffered { index, .. } => index,
