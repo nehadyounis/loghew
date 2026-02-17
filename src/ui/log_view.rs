@@ -8,7 +8,7 @@ use ratatui::text::{Line, Span};
 use ratatui::widgets::Paragraph;
 
 use super::colors;
-use crate::app::{App, InputMode};
+use crate::app::{App, InputMode, TailView};
 use crate::log::{LogLevel, LEVEL_REGEX};
 
 fn sanitize_line(text: &str) -> Cow<'_, str> {
@@ -36,6 +36,11 @@ fn sanitize_line(text: &str) -> Cow<'_, str> {
 }
 
 pub fn draw(f: &mut Frame, app: &mut App, area: Rect) {
+    if let Some(ref tail) = app.tail_view {
+        draw_tail(f, app, area, tail);
+        return;
+    }
+
     let total = app.total_lines();
     let gutter_width = if total == 0 {
         1
@@ -316,6 +321,72 @@ fn draw_wrapped(f: &mut Frame, app: &mut App, area: Rect, gutter_width: usize, h
 
     while lines.len() < height {
         lines.push(Line::from(Span::raw(" ".repeat(area.width as usize))));
+    }
+
+    let paragraph = Paragraph::new(lines).style(Style::reset());
+    f.render_widget(paragraph, area);
+}
+
+fn draw_tail(f: &mut Frame, app: &App, area: Rect, tail: &TailView) {
+    let height = area.height as usize;
+    let total = tail.lines.len();
+    let start = total.saturating_sub(height);
+
+    let normal_gutter = if app.total_lines() == 0 { 1 } else {
+        (app.total_lines() as f64).log10().floor() as usize + 1
+    }.max(1);
+
+    let sanitized: Vec<Cow<str>> = (0..height)
+        .map(|i| {
+            let idx = start + i;
+            if idx >= total {
+                Cow::Borrowed("")
+            } else {
+                sanitize_line(&tail.lines[idx])
+            }
+        })
+        .collect();
+
+    let mut lines = Vec::with_capacity(height);
+
+    for i in 0..height {
+        let idx = start + i;
+        if idx >= total {
+            lines.push(Line::from(Span::raw(" ".repeat(area.width as usize))));
+            continue;
+        }
+
+        let level = tail.levels[idx];
+        let text_style = level_text_style(level, app);
+        let line_text: &str = &sanitized[i];
+
+        let mut spans: Vec<Span> = vec![Span::styled(" ", Style::default())];
+
+        if app.config.line_numbers {
+            spans.push(Span::styled(
+                format!("{:>width$}", "~", width = normal_gutter),
+                Style::default().fg(colors::LINE_NUM),
+            ));
+        }
+
+        spans.push(Span::styled(" │ ", Style::default().fg(colors::GUTTER_SEP)));
+
+        if app.show_delta {
+            spans.push(Span::raw(" ".repeat(9)));
+        }
+
+        if app.semantic_color {
+            spans.extend(tokenize_semantic(line_text, app));
+        } else {
+            spans.push(Span::styled(line_text, text_style));
+        }
+
+        let total_width: usize = spans.iter().map(|s| s.width()).sum();
+        if total_width < area.width as usize {
+            spans.push(Span::raw(" ".repeat(area.width as usize - total_width)));
+        }
+
+        lines.push(Line::from(spans));
     }
 
     let paragraph = Paragraph::new(lines).style(Style::reset());

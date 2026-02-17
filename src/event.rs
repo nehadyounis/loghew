@@ -166,6 +166,8 @@ fn handle_idle_key(app: &mut App, key: KeyEvent) {
         KeyCode::Esc => {
             if app.show_help {
                 app.show_help = false;
+            } else if app.tail_view.is_some() {
+                app.exit_tail_mode();
             } else if app.text_selection.is_some() || !app.selected_lines.is_empty() {
                 app.clear_selection();
             } else if app.has_active_search() {

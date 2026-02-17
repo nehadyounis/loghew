@@ -204,4 +204,33 @@ impl LogSource {
             _ => None,
         }
     }
+
+    pub fn scan_tail(&self, count: usize) -> Vec<(String, super::parser::LogLevel)> {
+        let data = self.data();
+        if data.is_empty() {
+            return Vec::new();
+        }
+        let mut newline_count = 0;
+        let mut start = data.len();
+        for i in (0..data.len()).rev() {
+            if data[i] == b'\n' {
+                newline_count += 1;
+                if newline_count >= count + 1 {
+                    start = i + 1;
+                    break;
+                }
+            }
+        }
+        if newline_count < count + 1 {
+            start = 0;
+        }
+        let tail_data = &data[start..];
+        String::from_utf8_lossy(tail_data)
+            .lines()
+            .map(|line| {
+                let level = super::parser::detect_level(line);
+                (line.to_string(), level)
+            })
+            .collect()
+    }
 }

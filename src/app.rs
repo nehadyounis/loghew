@@ -5,7 +5,7 @@ use std::time::Instant;
 use regex::Regex;
 
 use crate::config::{self, Config};
-use crate::log::LogSource;
+use crate::log::{LogLevel, LogSource};
 use crate::search::SearchState;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -23,14 +23,14 @@ pub struct SlashCommand {
 
 pub const SLASH_COMMANDS: &[SlashCommand] = &[
     SlashCommand { name: "regex", description: "Regex search  /r error.*timeout", has_arg: true },
-    SlashCommand { name: "filter", description: "Filter lines  /filter ERROR !debug", has_arg: true },
+    SlashCommand { name: "follow", description: "Toggle auto-scroll to bottom  /f", has_arg: false },
+    SlashCommand { name: "filter", description: "Filter lines  /fi ERROR !debug", has_arg: true },
     SlashCommand { name: "time", description: "Jump to time  /t 14:30  /t -5m  /t +1h", has_arg: true },
     SlashCommand { name: "go", description: "Go to line or bookmark  /g 42  /g mymark", has_arg: true },
     SlashCommand { name: "bookmark", description: "Toggle bookmark  /b  or  /b name", has_arg: true },
     SlashCommand { name: "bookmarks", description: "Open bookmark list  /bs", has_arg: false },
     SlashCommand { name: "notify", description: "Watch for pattern  /n ERROR  (stacks)", has_arg: true },
     SlashCommand { name: "notifications", description: "List active notifications  /ns  d to remove", has_arg: false },
-    SlashCommand { name: "follow", description: "Toggle auto-scroll to bottom  /f", has_arg: false },
     SlashCommand { name: "delta", description: "Toggle time delta column  /d", has_arg: false },
     SlashCommand { name: "top", description: "Go to first line", has_arg: false },
     SlashCommand { name: "bottom", description: "Go to last line", has_arg: false },
@@ -49,6 +49,11 @@ pub struct NotifyEntry {
 pub struct FilterCondition {
     pub regex: Regex,
     pub negated: bool,
+}
+
+pub struct TailView {
+    pub lines: Vec<String>,
+    pub levels: Vec<LogLevel>,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -101,6 +106,7 @@ pub struct App {
     pub wrap_char_offsets: Vec<usize>,
     pub last_click: Option<(Instant, u16)>,
     pub semantic_color: bool,
+    pub tail_view: Option<TailView>,
 }
 
 impl App {
@@ -149,6 +155,7 @@ impl App {
             wrap_row_map: Vec::new(),
             wrap_char_offsets: Vec::new(),
             last_click: None,
+            tail_view: None,
         }
     }
 
@@ -217,6 +224,10 @@ impl App {
     }
 
     pub fn scroll_up(&mut self, lines: usize) {
+        if self.tail_view.is_some() {
+            self.exit_tail_mode();
+            return;
+        }
         self.scroll_offset = self.scroll_offset.saturating_sub(lines);
         if self.follow_mode && lines > 0 {
             self.follow_mode = false;
@@ -239,11 +250,21 @@ impl App {
 
     pub fn jump_to_bottom(&mut self) {
         if self.source.scanning() {
-            let start = std::time::Instant::now();
-            while self.source.scanning() && start.elapsed() < std::time::Duration::from_secs(2) {
-                self.source.scan_batch();
-            }
+            let pairs = self.source.scan_tail(self.viewport_height + 20);
+            let (lines, levels): (Vec<_>, Vec<_>) = pairs.into_iter().unzip();
+            self.tail_view = Some(TailView { lines, levels });
+        } else {
+            self.tail_view = None;
+            self.scroll_to_bottom();
         }
+    }
+
+    pub fn in_tail_mode(&self) -> bool {
+        self.tail_view.is_some()
+    }
+
+    pub fn exit_tail_mode(&mut self) {
+        self.tail_view = None;
         self.scroll_to_bottom();
     }
 
@@ -688,7 +709,7 @@ impl App {
                     self.set_status("Time deltas OFF", false);
                 }
             }
-            "filter" | "only-show" => {
+            "filter" | "fi" | "only-show" => {
                 if arg.is_empty() {
                     self.clear_filter();
                 } else {

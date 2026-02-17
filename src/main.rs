@@ -160,7 +160,10 @@ fn main() -> Result<()> {
             needs_redraw = true;
         } else if app.is_scanning() {
             app.scan_tick();
-            if app.follow_mode {
+            if !app.is_scanning() && app.tail_view.is_some() {
+                app.tail_view = None;
+                app.scroll_to_bottom();
+            } else if app.follow_mode && !app.in_tail_mode() {
                 app.scroll_to_bottom();
             }
             needs_redraw = true;
