@@ -153,7 +153,7 @@ fn handle_idle_key(app: &mut App, key: KeyEvent) {
         KeyCode::PageUp => app.scroll_up(app.viewport_height),
         KeyCode::PageDown => app.scroll_down(app.viewport_height),
         KeyCode::Home => app.scroll_to_top(),
-        KeyCode::End => app.scroll_to_bottom(),
+        KeyCode::End => app.jump_to_bottom(),
 
         KeyCode::Enter => {
             if key.modifiers.contains(KeyModifiers::SHIFT) {
@@ -170,10 +170,11 @@ fn handle_idle_key(app: &mut App, key: KeyEvent) {
                 app.clear_selection();
             } else if app.has_active_search() {
                 app.search = crate::search::SearchState::new();
-            } else if !app.filter_conditions.is_empty() {
+            } else if !app.filter_conditions.is_empty() || app.filtering {
                 app.filter_conditions.clear();
                 app.filter_highlight = None;
                 app.filtered_lines.clear();
+                app.filtering = false;
                 app.scroll_offset = 0;
             } else if app.follow_mode {
                 app.follow_mode = false;

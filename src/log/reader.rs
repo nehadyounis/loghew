@@ -9,7 +9,7 @@ use super::index::{build_index_chunk, detect_timestamp_format, LogIndex};
 const MMAP_THRESHOLD: u64 = 10 * 1024 * 1024; // 10MB
 
 pub enum LogSource {
-    Mmap { mmap: Mmap, index: LogIndex },
+    Mmap { mmap: Mmap, index: LogIndex, scan_offset: u64, scan_limit: u64 },
     Buffered { content: Vec<u8>, index: LogIndex },
 }
 
@@ -25,11 +25,12 @@ impl LogSource {
             let mut index = LogIndex::new();
             index.timestamp_format = ts_format.clone();
 
-            // Skip timestamps for large files — parsed incrementally after UI opens
-            let chunk = build_index_chunk(&mmap, 0, usize::MAX, &ts_format, true);
+            // Scan first 50K lines — rest continues incrementally in background
+            let chunk = build_index_chunk(&mmap, 0, 50_000, &ts_format, true);
+            let scan_offset = chunk.line_offsets.last().map(|&x| x + 1).unwrap_or(size);
             index.merge_chunk(chunk);
 
-            Ok(LogSource::Mmap { mmap, index })
+            Ok(LogSource::Mmap { mmap, index, scan_offset, scan_limit: size })
         } else {
             let content = std::fs::read(path)?;
             let ts_format = detect_timestamp_format(&content);
@@ -70,7 +71,7 @@ impl LogSource {
         let ts_format = self.index().timestamp_format.clone();
 
         match self {
-            LogSource::Mmap { mmap, index } => {
+            LogSource::Mmap { mmap, index, .. } => {
                 *mmap = unsafe { Mmap::map(&file)? };
                 // Always skip timestamps in reload — batch parser handles them
                 let chunk = build_index_chunk(mmap, old_size, usize::MAX, &ts_format, true);
@@ -147,7 +148,7 @@ impl LogSource {
 
     pub fn parse_deferred_batch(&mut self, batch_size: usize) -> bool {
         match self {
-            LogSource::Mmap { mmap, index } => {
+            LogSource::Mmap { mmap, index, .. } => {
                 index.parse_deferred_batch(mmap, batch_size)
             }
             LogSource::Buffered { content, index } => {
@@ -159,5 +160,48 @@ impl LogSource {
     pub fn indexing_ready(&self) -> bool {
         let idx = self.index();
         idx.timestamps_ready && idx.levels_ready
+    }
+
+    pub fn scanning(&self) -> bool {
+        match self {
+            LogSource::Mmap { scan_offset, scan_limit, .. } => *scan_offset < *scan_limit,
+            LogSource::Buffered { .. } => false,
+        }
+    }
+
+    pub fn scan_batch(&mut self) -> bool {
+        match self {
+            LogSource::Mmap { mmap, index, scan_offset, scan_limit } => {
+                if *scan_offset >= *scan_limit {
+                    return false;
+                }
+                let limit = (*scan_limit as usize).min(mmap.len());
+                let ts_fmt = index.timestamp_format.clone();
+                let chunk = build_index_chunk(
+                    &mmap[..limit],
+                    *scan_offset,
+                    50_000,
+                    &ts_fmt,
+                    true,
+                );
+                if chunk.line_offsets.is_empty() {
+                    *scan_offset = *scan_limit;
+                    return false;
+                }
+                *scan_offset = chunk.line_offsets.last().map(|&x| x + 1).unwrap_or(*scan_limit);
+                index.merge_chunk(chunk);
+                *scan_offset < *scan_limit
+            }
+            LogSource::Buffered { .. } => false,
+        }
+    }
+
+    pub fn scan_progress(&self) -> Option<(u64, u64)> {
+        match self {
+            LogSource::Mmap { scan_offset, scan_limit, .. } if *scan_offset < *scan_limit => {
+                Some((*scan_offset, *scan_limit))
+            }
+            _ => None,
+        }
     }
 }

@@ -155,6 +155,15 @@ fn main() -> Result<()> {
         } else if app.searching() {
             app.search_tick();
             needs_redraw = true;
+        } else if app.filtering() {
+            app.filter_tick();
+            needs_redraw = true;
+        } else if app.is_scanning() {
+            app.scan_tick();
+            if app.follow_mode {
+                app.scroll_to_bottom();
+            }
+            needs_redraw = true;
         } else if app.tick() {
             needs_redraw = true;
         } else if !app.indexing_ready() {

@@ -168,7 +168,17 @@ pub fn build_index_chunk(
         }
     }
 
-    // Phase 2: Parse levels (always) and timestamps (optionally)
+    // Phase 2: Bulk-allocate placeholders when deferred, otherwise parse per-line
+    if skip_timestamps {
+        let n = offsets.len();
+        return IndexChunk {
+            line_offsets: offsets,
+            timestamps: vec![None; n],
+            levels: vec![LogLevel::Unknown; n],
+            is_entry_start: vec![true; n],
+        };
+    }
+
     let mut timestamps = Vec::with_capacity(offsets.len());
     let mut levels = Vec::with_capacity(offsets.len());
     let mut is_entry_start = Vec::with_capacity(offsets.len());
@@ -186,17 +196,9 @@ pub fn build_index_chunk(
         let line_slice = &data[line_start..line_end];
         let line_str = std::str::from_utf8(line_slice).unwrap_or_default();
 
-        let level = if skip_timestamps {
-            LogLevel::Unknown
-        } else {
-            detect_level(line_str)
-        };
-        levels.push(level);
+        levels.push(detect_level(line_str));
 
-        if skip_timestamps {
-            timestamps.push(None);
-            is_entry_start.push(true);
-        } else if let Some(fmt) = ts_format {
+        if let Some(fmt) = ts_format {
             if let Some(ms) = fmt.parse_epoch_ms(line_str) {
                 timestamps.push(Some(ms));
                 is_entry_start.push(true);

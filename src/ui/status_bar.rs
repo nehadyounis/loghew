@@ -49,6 +49,15 @@ pub fn draw_status(f: &mut Frame, app: &App, area: Rect) {
         ),
     ];
 
+    if let Some((offset, limit)) = app.source.scan_progress() {
+        let pct = if limit > 0 { offset * 100 / limit } else { 100 };
+        spans.push(Span::styled("  ", Style::default()));
+        spans.push(Span::styled(
+            format!("SCANNING {}%", pct),
+            Style::default().fg(colors::HINT_KEY),
+        ));
+    }
+
     if app.follow_mode {
         spans.push(Span::styled("  ", Style::default()));
         spans.push(Span::styled(

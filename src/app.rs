@@ -80,6 +80,9 @@ pub struct App {
     pub filter_conditions: Vec<FilterCondition>,
     pub filter_highlight: Option<Regex>,
     pub filtered_lines: Vec<usize>,
+    pub filter_cursor: usize,
+    pub filter_total: usize,
+    pub filtering: bool,
     pub follow_mode: bool,
     pub show_delta: bool,
     pub show_help: bool,
@@ -125,6 +128,9 @@ impl App {
             filter_conditions: Vec::new(),
             filter_highlight: None,
             filtered_lines: Vec::new(),
+            filter_cursor: 0,
+            filter_total: 0,
+            filtering: false,
             follow_mode: false,
             show_delta: false,
             show_help: false,
@@ -229,6 +235,16 @@ impl App {
     pub fn scroll_to_bottom(&mut self) {
         let max = self.visible_count().saturating_sub(self.viewport_height);
         self.scroll_offset = max;
+    }
+
+    pub fn jump_to_bottom(&mut self) {
+        if self.source.scanning() {
+            let start = std::time::Instant::now();
+            while self.source.scanning() && start.elapsed() < std::time::Duration::from_secs(2) {
+                self.source.scan_batch();
+            }
+        }
+        self.scroll_to_bottom();
     }
 
     fn visible_idx_for_row(&self, row: u16) -> usize {
@@ -645,12 +661,12 @@ impl App {
             }
             "quit" | "q" | "exit" | "x" => self.should_quit = true,
             "top" => self.scroll_to_top(),
-            "bottom" | "end" => self.scroll_to_bottom(),
+            "bottom" | "end" => self.jump_to_bottom(),
             "help" => self.show_help = !self.show_help,
             "follow" | "f" => {
                 self.follow_mode = !self.follow_mode;
                 if self.follow_mode {
-                    self.scroll_to_bottom();
+                    self.jump_to_bottom();
                     self.set_status("Follow mode ON — auto-scrolling to bottom", false);
                 } else {
                     self.set_status("Follow mode OFF", false);
@@ -785,9 +801,27 @@ impl App {
         };
 
         self.filtered_lines.clear();
-        for i in 0..self.total_lines() {
+        self.filter_conditions = conditions;
+        self.filter_highlight = highlight;
+        self.filter_cursor = 0;
+        self.filter_total = self.total_lines();
+        self.filtering = true;
+        self.scroll_offset = 0;
+        self.set_status("Filtering...", false);
+    }
+
+    pub fn filtering(&self) -> bool {
+        self.filtering
+    }
+
+    pub fn filter_tick(&mut self) -> bool {
+        if !self.filtering {
+            return false;
+        }
+        let end = (self.filter_cursor + 10_000).min(self.filter_total);
+        for i in self.filter_cursor..end {
             if let Some(line) = self.source.get_line(i) {
-                let matches = conditions.iter().all(|c| {
+                let matches = self.filter_conditions.iter().all(|c| {
                     let found = c.regex.is_match(line);
                     if c.negated { !found } else { found }
                 });
@@ -796,21 +830,30 @@ impl App {
                 }
             }
         }
-        let count = self.filtered_lines.len();
-        self.filter_conditions = conditions;
-        self.filter_highlight = highlight;
-        self.scroll_offset = 0;
-        self.set_status(
-            format!("Showing {} lines matching \"{}\"", count, pattern),
-            false,
-        );
+        self.filter_cursor = end;
+        if end >= self.filter_total {
+            self.filtering = false;
+            let count = self.filtered_lines.len();
+            self.set_status(
+                format!("Showing {} filtered lines", count),
+                false,
+            );
+        } else {
+            let pct = self.filter_cursor * 100 / self.filter_total;
+            self.status_message = Some((
+                format!("Filtering... {}%  ({} matches)", pct, self.filtered_lines.len()),
+                false,
+            ));
+        }
+        self.filtering
     }
 
     fn clear_filter(&mut self) {
-        if !self.filter_conditions.is_empty() {
+        if !self.filter_conditions.is_empty() || self.filtering {
             self.filter_conditions.clear();
             self.filter_highlight = None;
             self.filtered_lines.clear();
+            self.filtering = false;
             self.scroll_offset = 0;
             self.set_status("Filter cleared", false);
         } else {
@@ -1086,7 +1129,15 @@ impl App {
         }
     }
 
-    // --- Deferred indexing ---
+    // --- Scanning & deferred indexing ---
+
+    pub fn is_scanning(&self) -> bool {
+        self.source.scanning()
+    }
+
+    pub fn scan_tick(&mut self) {
+        self.source.scan_batch();
+    }
 
     pub fn parse_deferred_batch(&mut self) -> bool {
         self.source.parse_deferred_batch(10_000)
