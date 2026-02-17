@@ -1,5 +1,6 @@
 use std::collections::BTreeSet;
 use std::path::PathBuf;
+use std::time::Instant;
 
 use regex::Regex;
 
@@ -34,6 +35,8 @@ pub const SLASH_COMMANDS: &[SlashCommand] = &[
     SlashCommand { name: "top", description: "Go to first line", has_arg: false },
     SlashCommand { name: "bottom", description: "Go to last line", has_arg: false },
     SlashCommand { name: "config", description: "Open settings  ←→ change  Esc save", has_arg: false },
+    SlashCommand { name: "color", description: "Toggle semantic coloring  /c", has_arg: false },
+    SlashCommand { name: "wrap", description: "Toggle line wrapping  /w", has_arg: false },
     SlashCommand { name: "help", description: "Show keyboard shortcuts & commands", has_arg: false },
     SlashCommand { name: "quit", description: "Quit  /q", has_arg: false },
 ];
@@ -84,6 +87,11 @@ pub struct App {
     pub show_config: bool,
     pub config_cursor: usize,
     pub config: Config,
+    pub wrap_mode: bool,
+    pub wrap_row_map: Vec<usize>,
+    pub wrap_char_offsets: Vec<usize>,
+    pub last_click: Option<(Instant, u16)>,
+    pub semantic_color: bool,
 }
 
 impl App {
@@ -122,7 +130,12 @@ impl App {
             notification_cursor: 0,
             show_config: false,
             config_cursor: 0,
+            wrap_mode: config.wrap,
+            semantic_color: config.semantic_color,
             config,
+            wrap_row_map: Vec::new(),
+            wrap_char_offsets: Vec::new(),
+            last_click: None,
         }
     }
 
@@ -211,8 +224,16 @@ impl App {
         self.scroll_offset = max;
     }
 
+    fn visible_idx_for_row(&self, row: u16) -> usize {
+        if self.wrap_mode && !self.wrap_row_map.is_empty() {
+            self.wrap_row_map.get(row as usize).copied().unwrap_or(self.scroll_offset)
+        } else {
+            self.scroll_offset + row as usize
+        }
+    }
+
     pub fn click_line(&mut self, row: u16) {
-        let visible_idx = self.scroll_offset + row as usize;
+        let visible_idx = self.visible_idx_for_row(row);
         let line_num = self.actual_line(visible_idx);
         if line_num >= self.total_lines() {
             return;
@@ -227,8 +248,41 @@ impl App {
         }
     }
 
+    pub fn double_click_line(&mut self, row: u16) {
+        let visible_idx = self.visible_idx_for_row(row);
+        let line_num = self.actual_line(visible_idx);
+        if line_num >= self.total_lines() {
+            return;
+        }
+        let (start, end) = self.log_entry_range(line_num);
+        self.selected_lines.clear();
+        for l in start..=end {
+            self.selected_lines.insert(l);
+        }
+        self.selection_anchor = Some(start);
+    }
+
+    fn log_entry_range(&self, line_num: usize) -> (usize, usize) {
+        let index = self.source.index();
+        if index.timestamp_format.is_none() || index.is_entry_start.is_empty() {
+            return (line_num, line_num);
+        }
+        // Walk backwards to the entry start
+        let mut start = line_num;
+        while start > 0 && !index.is_entry_start.get(start).copied().unwrap_or(true) {
+            start -= 1;
+        }
+        // Walk forward to find the next entry start
+        let total = self.total_lines();
+        let mut end = line_num + 1;
+        while end < total && !index.is_entry_start.get(end).copied().unwrap_or(true) {
+            end += 1;
+        }
+        (start, end - 1)
+    }
+
     pub fn ctrl_click_line(&mut self, row: u16) {
-        let visible_idx = self.scroll_offset + row as usize;
+        let visible_idx = self.visible_idx_for_row(row);
         let line_num = self.actual_line(visible_idx);
         if line_num >= self.total_lines() {
             return;
@@ -242,7 +296,7 @@ impl App {
     }
 
     pub fn shift_click_line(&mut self, row: u16) {
-        let visible_idx = self.scroll_offset + row as usize;
+        let visible_idx = self.visible_idx_for_row(row);
         let line_num = self.actual_line(visible_idx);
         if line_num >= self.total_lines() {
             return;
@@ -289,7 +343,7 @@ impl App {
     }
 
     fn terminal_to_text_pos(&self, row: u16, col: u16) -> Option<TextPos> {
-        let visible_idx = self.scroll_offset + row as usize;
+        let visible_idx = self.visible_idx_for_row(row);
         if visible_idx >= self.visible_count() {
             return None;
         }
@@ -300,10 +354,15 @@ impl App {
         } else {
             0
         };
+        let char_offset = if self.wrap_mode {
+            self.wrap_char_offsets.get(row as usize).copied().unwrap_or(0)
+        } else {
+            0
+        };
         let line_len = self.source.get_line(line).map(|l| l.chars().count()).unwrap_or(0);
         Some(TextPos {
             line,
-            col: text_col.min(line_len),
+            col: (text_col + char_offset).min(line_len),
         })
     }
 
@@ -565,6 +624,14 @@ impl App {
                 } else {
                     self.set_status("Follow mode OFF", false);
                 }
+            }
+            "color" | "c" => {
+                self.semantic_color = !self.semantic_color;
+                self.set_status(if self.semantic_color { "Semantic coloring ON" } else { "Semantic coloring OFF" }, false);
+            }
+            "wrap" | "w" => {
+                self.wrap_mode = !self.wrap_mode;
+                self.set_status(if self.wrap_mode { "Line wrap ON" } else { "Line wrap OFF" }, false);
             }
             "delta" | "d" => {
                 self.show_delta = !self.show_delta;
@@ -877,7 +944,7 @@ impl App {
         }
     }
 
-    pub const CONFIG_ITEMS: [&'static str; 4] = ["Theme", "Line numbers", "Mouse", "Scroll speed"];
+    pub const CONFIG_ITEMS: [&'static str; 6] = ["Theme", "Line numbers", "Mouse", "Scroll speed", "Wrap", "Semantic color"];
 
     pub fn config_up(&mut self) {
         if self.config_cursor > 0 {
@@ -900,6 +967,14 @@ impl App {
             1 => self.config.line_numbers = !self.config.line_numbers,
             2 => self.config.mouse = !self.config.mouse,
             3 => self.config.scroll_speed = (self.config.scroll_speed + 1).min(10),
+            4 => {
+                self.config.wrap = !self.config.wrap;
+                self.wrap_mode = self.config.wrap;
+            }
+            5 => {
+                self.config.semantic_color = !self.config.semantic_color;
+                self.semantic_color = self.config.semantic_color;
+            }
             _ => {}
         }
     }
@@ -925,14 +1000,16 @@ impl App {
             1 => if self.config.line_numbers { "ON" } else { "OFF" }.to_string(),
             2 => if self.config.mouse { "ON" } else { "OFF" }.to_string(),
             3 => self.config.scroll_speed.to_string(),
+            4 => if self.config.wrap { "ON" } else { "OFF" }.to_string(),
+            5 => if self.config.semantic_color { "ON" } else { "OFF" }.to_string(),
             _ => String::new(),
         }
     }
 
     pub fn save_config(&self) {
         let content = format!(
-            "[general]\ntheme = \"{}\"\nscroll_speed = {}\nline_numbers = {}\nmouse = {}\n",
-            self.config.theme_name(), self.config.scroll_speed, self.config.line_numbers, self.config.mouse
+            "[general]\ntheme = \"{}\"\nscroll_speed = {}\nline_numbers = {}\nmouse = {}\nwrap = {}\nsemantic_color = {}\n",
+            self.config.theme_name(), self.config.scroll_speed, self.config.line_numbers, self.config.mouse, self.config.wrap, self.config.semantic_color
         );
         if let Some(dir) = dirs::config_dir() {
             let dir = dir.join("loghew");

@@ -24,8 +24,18 @@ pub fn dispatch(app: &mut App, evt: &Event) {
                 } else if mouse.modifiers.contains(KeyModifiers::SHIFT) {
                     app.shift_click_line(mouse.row);
                 } else {
-                    app.click_line(mouse.row);
-                    app.start_drag(mouse.row, mouse.column);
+                    let now = std::time::Instant::now();
+                    let is_double = app.last_click.map_or(false, |(t, r)| {
+                        r == mouse.row && now.duration_since(t).as_millis() < 400
+                    });
+                    if is_double {
+                        app.double_click_line(mouse.row);
+                        app.last_click = None;
+                    } else {
+                        app.click_line(mouse.row);
+                        app.start_drag(mouse.row, mouse.column);
+                        app.last_click = Some((now, mouse.row));
+                    }
                 }
             }
             MouseEventKind::Drag(MouseButton::Left) => {

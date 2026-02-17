@@ -19,4 +19,11 @@ pub const INPUT_SUCCESS: Color = Color::Green;
 pub const POPUP_CMD: Color = Color::Cyan;
 pub const POPUP_DESC: Color = Color::Gray;
 
+pub const SEMANTIC_TIMESTAMP: Color = Color::DarkGray;
+pub const SEMANTIC_BRACKET: Color = Color::Cyan;
+pub const SEMANTIC_STRING: Color = Color::Green;
+pub const SEMANTIC_NUMBER: Color = Color::Magenta;
+pub const SEMANTIC_KEY: Color = Color::Cyan;
+pub const SEMANTIC_TEXT: Color = Color::Reset;
+
 pub const DOT: &str = "●";

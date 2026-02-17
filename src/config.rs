@@ -17,6 +17,8 @@ pub struct GeneralConfig {
     pub line_numbers: bool,
     pub mouse: bool,
     pub theme: String,
+    pub wrap: bool,
+    pub semantic_color: bool,
 }
 
 impl Default for GeneralConfig {
@@ -26,6 +28,8 @@ impl Default for GeneralConfig {
             line_numbers: true,
             mouse: true,
             theme: "default".to_string(),
+            wrap: false,
+            semantic_color: false,
         }
     }
 }
@@ -132,6 +136,8 @@ pub struct Config {
     pub scroll_speed: usize,
     pub line_numbers: bool,
     pub mouse: bool,
+    pub wrap: bool,
+    pub semantic_color: bool,
     pub theme_index: usize,
     pub error_color: Color,
     pub warn_color: Color,
@@ -164,6 +170,8 @@ impl Config {
             scroll_speed: file_config.general.scroll_speed.max(1),
             line_numbers: file_config.general.line_numbers,
             mouse: file_config.general.mouse,
+            wrap: file_config.general.wrap,
+            semantic_color: file_config.general.semantic_color,
             theme_index,
             error_color,
             warn_color,

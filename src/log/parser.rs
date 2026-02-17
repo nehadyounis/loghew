@@ -124,7 +124,7 @@ impl TimestampFormat {
     }
 }
 
-static LEVEL_REGEX: std::sync::LazyLock<Regex> =
+pub static LEVEL_REGEX: std::sync::LazyLock<Regex> =
     std::sync::LazyLock::new(|| Regex::new(r"(?i)\b(ERROR|FATAL|CRITICAL|WARN|WARNING|INFO|DEBUG|TRACE)\b").unwrap());
 
 pub fn detect_level(line: &str) -> LogLevel {

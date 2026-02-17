@@ -67,6 +67,7 @@ pub fn draw_status(f: &mut Frame, app: &App, area: Rect) {
         ));
     }
 
+
     if app.filter_regex.is_some() {
         spans.push(Span::styled("  ", Style::default()));
         spans.push(Span::styled(
