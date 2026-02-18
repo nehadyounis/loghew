@@ -1,4 +1,4 @@
-# loghew
+# loghew (beta)
 
 A TUI log viewer built with Rust.
 
