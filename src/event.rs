@@ -1,6 +1,8 @@
 use std::sync::atomic::Ordering;
 
-use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyModifiers, MouseButton, MouseEventKind};
+use crossterm::event::{
+    self, Event, KeyCode, KeyEvent, KeyEventKind, KeyModifiers, MouseButton, MouseEventKind,
+};
 
 use crate::app::{App, InputMode};
 
@@ -15,7 +17,12 @@ pub fn handle_event(app: &mut App) -> anyhow::Result<bool> {
 
 pub fn dispatch(app: &mut App, evt: &Event) {
     match evt {
-        Event::Key(key) => handle_key(app, *key),
+        Event::Key(key) => {
+            if key.kind == KeyEventKind::Release {
+                return;
+            }
+            handle_key(app, *key)
+        }
         Event::Mouse(mouse) => match mouse.kind {
             MouseEventKind::ScrollUp if app.in_tail_mode() => {
                 app.exit_tail_mode();
@@ -232,6 +239,15 @@ fn handle_typing_key(app: &mut App, key: KeyEvent) {
 fn copy_to_clipboard(text: &str) {
     use std::io::Write;
     use std::process::{Command, Stdio};
+
+    // Windows
+    if let Ok(mut child) = Command::new("clip").stdin(Stdio::piped()).spawn() {
+        if let Some(mut stdin) = child.stdin.take() {
+            let _ = stdin.write_all(text.as_bytes());
+        }
+        let _ = child.wait();
+        return;
+    }
 
     // macOS
     if let Ok(mut child) = Command::new("pbcopy").stdin(Stdio::piped()).spawn() {
