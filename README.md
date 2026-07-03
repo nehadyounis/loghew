@@ -18,6 +18,15 @@ cd loghew
 cargo install --path .
 ```
 
+Or use portage if you are a Gentoo user — via the Masterwolf overlay
+
+add Masterwolf repository `eselect repository enable masterwolf`, then:
+
+```sh
+emerge --sync   # if needed
+emerge --ask app-admin/loghew
+```
+
 ## Usage
 
 ```sh
