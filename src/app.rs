@@ -82,6 +82,7 @@ pub struct App {
     pub live_regex: Option<Regex>,
     pub should_quit: bool,
     pub viewport_height: usize,
+    pub viewport_width: usize,
     pub command_suggestions: Vec<usize>,
     pub suggestion_index: Option<usize>,
     pub input_history: Vec<String>,
@@ -152,6 +153,7 @@ impl App {
             live_regex: None,
             should_quit: false,
             viewport_height: 20,
+            viewport_width: 80,
             command_suggestions: Vec::new(),
             suggestion_index: None,
             input_history: Vec::new(),
@@ -254,7 +256,7 @@ impl App {
     }
 
     pub fn scroll_down(&mut self, lines: usize) {
-        let max = self.visible_count().saturating_sub(self.viewport_height);
+        let max = self.max_scroll_offset();
         self.scroll_offset = (self.scroll_offset + lines).min(max);
     }
 
@@ -270,7 +272,7 @@ impl App {
     }
 
     pub fn scroll_to(&mut self, line: usize) {
-        let max = self.visible_count().saturating_sub(self.viewport_height);
+        let max = self.max_scroll_offset();
         self.scroll_offset = line.min(max);
     }
 
@@ -279,8 +281,44 @@ impl App {
     }
 
     pub fn scroll_to_bottom(&mut self) {
-        let max = self.visible_count().saturating_sub(self.viewport_height);
-        self.scroll_offset = max;
+        self.scroll_offset = self.max_scroll_offset();
+    }
+
+    fn max_scroll_offset(&self) -> usize {
+        let visible = self.visible_count();
+        if !self.wrap_mode {
+            return visible.saturating_sub(self.viewport_height);
+        }
+
+        let gutter_width = if self.total_lines() == 0 {
+            1
+        } else {
+            (self.total_lines() as f64).log10().floor() as usize + 1
+        };
+        let prefix_width = 1
+            + if self.config.line_numbers { gutter_width } else { 0 }
+            + 3
+            + if self.show_delta { 9 } else { 0 };
+        let content_width = self.viewport_width.saturating_sub(prefix_width).max(1);
+
+        let mut rows = Vec::with_capacity(visible.min(self.viewport_height));
+        let mut accumulated_rows = 0;
+        for visible_idx in (0..visible).rev() {
+            let line_num = self.actual_line(visible_idx);
+            let chars = self
+                .source
+                .get_line(line_num)
+                .map(sanitized_char_count)
+                .unwrap_or(0);
+            let line_rows = chars.max(1).div_ceil(content_width);
+            rows.push(line_rows);
+            accumulated_rows += line_rows;
+            if accumulated_rows >= self.viewport_height {
+                break;
+            }
+        }
+
+        bottom_offset_for_rows_reversed(&rows, visible, self.viewport_height)
     }
 
     pub fn jump_to_bottom(&mut self) {
@@ -1623,6 +1661,62 @@ fn char_to_byte(s: &str, char_idx: usize) -> usize {
         .nth(char_idx)
         .map(|(i, _)| i)
         .unwrap_or(s.len())
+}
+
+fn sanitized_char_count(text: &str) -> usize {
+    let mut count = 0;
+    let mut chars = text.chars();
+    while let Some(c) = chars.next() {
+        if c == '\x1b' && chars.as_str().starts_with('[') {
+            for c in chars.by_ref() {
+                if c.is_ascii_alphabetic() {
+                    break;
+                }
+            }
+        } else if c == '\t' {
+            count += 4;
+        } else if !c.is_control() {
+            count += 1;
+        }
+    }
+    count
+}
+
+fn bottom_offset_for_rows_reversed(
+    reversed_row_counts: &[usize],
+    visible_count: usize,
+    viewport_height: usize,
+) -> usize {
+    let mut used = 0;
+    let mut included = 0;
+    for &rows in reversed_row_counts {
+        if included > 0 && used + rows > viewport_height {
+            break;
+        }
+        used += rows;
+        included += 1;
+    }
+    visible_count.saturating_sub(included)
+}
+
+#[cfg(test)]
+mod app_tests {
+    use super::bottom_offset_for_rows_reversed;
+
+    #[test]
+    fn wrapped_bottom_keeps_final_lines_visible() {
+        // From the end: the last two lines use one row each, while the line
+        // before them wraps to three rows. A four-row viewport must start at
+        // the penultimate line rather than letting the wrapped line hide it.
+        let reversed_rows = [1, 1, 3];
+        assert_eq!(bottom_offset_for_rows_reversed(&reversed_rows, 10, 4), 8);
+    }
+
+    #[test]
+    fn wrapped_bottom_includes_exact_fit() {
+        let reversed_rows = [1, 2, 1];
+        assert_eq!(bottom_offset_for_rows_reversed(&reversed_rows, 10, 4), 7);
+    }
 }
 
 fn send_notification(title: &str, body: &str) {

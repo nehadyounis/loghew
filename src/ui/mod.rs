@@ -38,6 +38,7 @@ pub fn draw(f: &mut Frame, app: &mut App) {
         .split(f.area());
 
     app.viewport_height = chunks[0].height as usize;
+    app.viewport_width = chunks[0].width as usize;
 
     if app.show_help {
         draw_help(f, chunks[0]);
